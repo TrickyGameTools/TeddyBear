@@ -21,14 +21,33 @@ namespace TeddyBear
     /// </summary>
     public partial class MainWindow : Window
     {
+        bool wpchanged = false;
+
+        void AutoEnable() {
+            if (wpchanged) {
+                PrjSelect.IsEnabled = false;
+                PrjMapSelect.IsEnabled = false;
+                PrjLoad.IsEnabled = false;
+                wpchanged = false;
+                return;
+            }
+
+        }
+
         public MainWindow()
         {
             InitializeComponent();
+            AutoEnable();
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+        }
 
+        private void WorkSpace_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            wpchanged = true;
+            AutoEnable();
         }
     }
 }
