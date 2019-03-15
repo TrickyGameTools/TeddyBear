@@ -41,6 +41,14 @@ namespace TeddyBear
             PrjSelect.IsEnabled = true;
             PrjMapSelect.IsEnabled = PrjSelect.SelectedItem != null;
             PrjLoad.IsEnabled = PrjMapSelect.SelectedItem != null;
+            PrjLoad.Content = "Load";
+            string SelPrj = (string)PrjSelect.SelectedValue;
+            if (SelPrj=="**NEW PROJECT**") {
+                PrjLoad.Content = "Create Project";
+                PrjLoad.IsEnabled = true;
+                PrjMapSelect.IsEnabled = false;
+            } 
+
         }
 
         public MainWindow()
