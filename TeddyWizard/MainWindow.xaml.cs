@@ -24,7 +24,7 @@
 // Version: 19.03.15
 // EndLic
 
-Ã¯Â»Â¿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
