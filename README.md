@@ -20,6 +20,7 @@ Also note that TeddyBear is by itself pretty much relying on my own classes and 
 # This repository
 
 I will in this repository have a few sub-folders:
+
 subfolder | contains
 ---|---
 TeddyClass  | This will contain some class files written in C# to load and show TeddyBear maps. Even manipulation will be possible (psst. the editor uses these classes itself, as well) :P
