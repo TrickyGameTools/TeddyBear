@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
 
 using TrickyUnits;
 
@@ -37,7 +38,9 @@ namespace TeddyBear
                 PrjLoad.IsEnabled = false;
                 return;
             }
-
+            PrjSelect.IsEnabled = true;
+            PrjMapSelect.IsEnabled = PrjSelect.SelectedItem != null;
+            PrjLoad.IsEnabled = PrjMapSelect.SelectedItem != null;
         }
 
         public MainWindow()
@@ -78,6 +81,7 @@ namespace TeddyBear
             }
             WorkSpace.Text = config.C("WORKSPACE");
             wpchanged = false;
+            ScanProjects();
             AutoEnable();
         }
 
@@ -102,17 +106,41 @@ namespace TeddyBear
         }
 
         void ScanProjects() {
-            
+            if (!Directory.Exists(DirWorkSpace)) {
+                var r = MessageBox.Show($"Directory {DirWorkSpace} does not exist!\n\nDo you want me to create it?", "Hey!", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                switch (r) {
+                    case MessageBoxResult.Yes:
+                        try {
+                            Directory.CreateDirectory(DirWorkSpace);
+                        } catch (Exception e) {
+                            MessageBox.Show($"Creation of {DirWorkSpace} failed\n\n{e.Message}");
+                            return;
+                        }
+                        break;
+                    default:
+                        MessageBox.Show("Then there's nothing I can do. Change your workspace directory to another directory, or try it again");
+                        break;
+                }
+            }
+            PrjSelect.Items.Clear();
+            PrjSelect.Items.Add("**NEW PROJECT**");
+            var ds = FileList.GetDir(DirWorkSpace, 2);
+            foreach (string d in ds) PrjSelect.Items.Add(d);
+            scanned = true;
+            AutoEnable();
+        }
+
+
+        private void PrjMapSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            AutoEnable();
+
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
-        }
-
-        private void PrjMapSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
+            //MessageBox.Show("Test");
+            AutoEnable();
         }
     }
 }
