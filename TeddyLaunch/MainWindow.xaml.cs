@@ -30,7 +30,7 @@ namespace TeddyBear
         string GINIFILE = Dirry.C("$AppSupport$/TeddyBaseConfig.GINI");
         string DirWorkSpace => Dirry.AD(config.C("WORKSPACE"));
 
-        void AutoEnable() {
+        void AutoEnable() {            
             PrjRenew.IsEnabled = DirWorkSpace != "";
             if (wpchanged || (!scanned) || (!PrjRenew.IsEnabled)) {
                 PrjSelect.IsEnabled = false;
