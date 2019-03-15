@@ -15,7 +15,7 @@
         <Label Content="Workspace folder" HorizontalAlignment="Left" Height="27" Margin="26,21,0,0" VerticalAlignment="Top" Width="157" Foreground="#FFFFB400"/>
         <TextBox x:Name="WorkSpace" HorizontalAlignment="Left" Height="27" Margin="233,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="480" Foreground="#FFB400FF" Background="#FF120016" Cursor="Pen" TextChanged="WorkSpace_TextChanged"/>
         <Label Content="Project:" HorizontalAlignment="Left" Height="29" Margin="26,70,0,0" VerticalAlignment="Top" Width="203" Foreground="#FFFFB400"/>
-        <ListBox x:Name="PrjSelect" HorizontalAlignment="Left" Height="183" Margin="234,70,0,0" VerticalAlignment="Top" Width="294" SelectionChanged="ListBox_SelectionChanged" Background="#FF001219" Foreground="#FF00B4FF"/>
+        <ListBox x:Name="PrjSelect" HorizontalAlignment="Left" Height="183" Margin="234,70,0,0" VerticalAlignment="Top" Width="294" SelectionChanged="PrjSelect_SelectionChanged" Background="#FF001219" Foreground="#FF00B4FF"/>
         <Button x:Name="PrjLoad" Content="Load" HorizontalAlignment="Left" Height="45" Margin="234,258,0,0" VerticalAlignment="Top" Width="150" Click="PrjLoad_Click"/>
         <Button x:Name="PrjRenew" Content="Renew" HorizontalAlignment="Left" Height="45" Margin="393,258,0,0" VerticalAlignment="Top" Width="135" Click="PrjRenew_Click"/>
         <ListBox x:Name="PrjMapSelect" HorizontalAlignment="Left" Height="233" Margin="533,70,0,0" VerticalAlignment="Top" Width="234" Background="#FF001219" BorderBrush="#FF00B4FF" SelectionChanged="PrjMapSelect_SelectionChanged"/>

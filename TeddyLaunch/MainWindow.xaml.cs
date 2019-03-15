@@ -137,7 +137,7 @@ namespace TeddyBear
 
         }
 
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void PrjSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //MessageBox.Show("Test");
             AutoEnable();
