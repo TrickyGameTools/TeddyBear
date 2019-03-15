@@ -62,6 +62,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="..\..\TrickyUnits\Dirry.cs">
+      <Link>Imported Classes\Units\Dirry.cs</Link>
+    </Compile>
+    <Compile Include="..\..\TrickyUnits\FileList.cs">
+      <Link>Imported Classes\Units\FileList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\TrickyUnits\GINI Is Not Ini.cs">
+      <Link>Imported Classes\Units\GINI Is Not Ini.cs</Link>
+    </Compile>
+    <Compile Include="..\..\TrickyUnits\mkl.cs">
+      <Link>Imported Classes\Units\mkl.cs</Link>
+    </Compile>
+    <Compile Include="..\..\TrickyUnits\qstr.cs">
+      <Link>Imported Classes\Units\qstr.cs</Link>
+    </Compile>
+    <Compile Include="..\..\TrickyUnits\qstream.cs">
+      <Link>Imported Classes\Units\qstream.cs</Link>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
