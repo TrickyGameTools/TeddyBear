@@ -64,7 +64,7 @@
    echo:Building the editor failed!
    echo:
    type ErrorLog\Edit.txt
-   goto :FINALE
+   goto FINALE
    
 :FINALE
    echo:
