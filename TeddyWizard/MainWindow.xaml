@@ -5,8 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TeddyWizard"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="TeddyBear Project Creation Wizard" Height="450" Width="800">
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FF190012" Offset="0"/>
+            <GradientStop Color="#FF120064" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Background>
     <Grid>
-        
+        <Label Content="Name Project:" HorizontalAlignment="Left" VerticalAlignment="Top" Width="270" Foreground="#FFFFB400" Margin="10,0,0,0"/>
+        <TextBox x:Name="ProjectName" HorizontalAlignment="Left" Height="26" Margin="292,0,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="469" Background="#FF000019" Foreground="#FF00B4FF"/>
+        <Label Content="Map Format:" HorizontalAlignment="Left" Height="31" Margin="10,31,0,0" VerticalAlignment="Top" Width="270"  Foreground="#FFFFB400"/>
+        <TextBox HorizontalAlignment="Left" x:Name="MapW" Height="24" Margin="292,31,0,0" TextWrapping="Wrap" Text="100" VerticalAlignment="Top" Width="107" Foreground="#FFB3FF00" Background="#FF001900" />
+        <TextBox HorizontalAlignment="Left" x:Name="MapH" Height="24" Margin="436,31,0,0" TextWrapping="Wrap" Text="100" VerticalAlignment="Top" Width="107" Background="#FF001900" Foreground="#FFB4FF00"/>
+        <Label Content=" x" Margin="404,31,361,357" Foreground="#ffffb400" />
+        <Label Content="Map Meta Data Fields:" HorizontalAlignment="Left" Height="42" Margin="10,67,0,0" VerticalAlignment="Top" Width="270" Foreground="#FFFFB400"/>
+        <Label Content="Please define your meta-data fields and separate them with semi-colons" Margin="10,80,512,297" Foreground="#FFAF8400" Height="42" Width="270"/>
+        <TextBox x:Name="MetaData" HorizontalAlignment="Left" Height="123" Margin="292,67,0,0" TextWrapping="Wrap" Text="MapTitle;Author" VerticalAlignment="Top" Width="469" Background="#FF000019" Foreground="#FF00B4FF"/>
+        <Label Content="Location Map Files:" Foreground="#ffffb400" HorizontalAlignment="Left" Height="38" Margin="10,195,0,0" VerticalAlignment="Top" Width="270"/>
+        <TextBox x:Name="MapFileFolder" HorizontalAlignment="Left" Height="24" Margin="292,195,0,0" TextWrapping="Wrap" Text="*InProject*" VerticalAlignment="Top" Width="469" Background="#FF000019" Foreground="#FF00B4FF"/>
+        <Button Content="Let's Go!" HorizontalAlignment="Left" VerticalAlignment="Top" Width="555" Margin="139,358,0,0" Background="#FF190000" Foreground="Red" Click="Button_Click"/>
+        <Label x:Name="copyright" Content="..." HorizontalAlignment="Left" VerticalAlignment="Top" Margin="175,383,0,0" Width="519" Foreground="#ffffb400"/>
+        <Label Content="Layers:" HorizontalAlignment="Left" Height="25" Margin="10,238,0,0" VerticalAlignment="Top" Width="270" Foreground="#ffffb400" RenderTransformOrigin="0.5,0.5"/>
+        <TextBox Background="#FF000019" Foreground="#FF00B4FF" x:Name="Layers" HorizontalAlignment="Left" Height="44" TextWrapping="Wrap" Text="Walls;Floors;Deco" VerticalAlignment="Top" Width="469" Margin="292,224,0,0"/>
+        <Label Content="Texture Folder:" Foreground="#ffffb400" HorizontalAlignment="Left" Height="30" Margin="10,273,0,0" VerticalAlignment="Top" Width="270"/>
+        <TextBox x:Name="TextureFolder" HorizontalAlignment="Left" Height="30"  Background="#FF000019" Foreground="#FF00B4FF" Margin="292,273,0,0" TextWrapping="Wrap" Text="*InProject*" VerticalAlignment="Top" Width="469" />
+
     </Grid>
 </Window>
