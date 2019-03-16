@@ -37,7 +37,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Diagnostics;
 using System.IO;
 
 using TrickyUnits;
@@ -50,6 +50,7 @@ namespace TeddyBear
     /// </summary>
     public partial class MainWindow : Window
     {
+        static public string MyExe => System.Reflection.Assembly.GetEntryAssembly().Location;
         bool wpchanged = false;
         bool scanned = false;
         TGINI config = null;
@@ -126,9 +127,12 @@ namespace TeddyBear
             AutoEnable();
         }
 
-        private void PrjLoad_Click(object sender, RoutedEventArgs e)
-        {
-
+        private void PrjLoad_Click(object sender, RoutedEventArgs e) {
+            string SelPrj = (string)PrjSelect.SelectedValue;
+            if (SelPrj=="*New Project*") {
+                Process.Start($"{qstr.ExtractDir(MyExe)}TeddyWizard.exe");
+                return;
+            }
         }
 
         private void PrjRenew_Click(object sender, RoutedEventArgs e) {
