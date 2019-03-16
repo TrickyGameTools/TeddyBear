@@ -21,6 +21,7 @@
 
 
 
+
 using TrickyUnits;
 using System;
 using System.Collections.Generic;
@@ -48,12 +49,21 @@ namespace TeddyBear{
     }
 
     class TeddyObject {
-
         Dictionary<string, string> Data;
-
         public string ObjType = "";
+        public void Df(string k, string v) { if (Data == null) Data = new Dictionary<string, string>(); Data[k] = v; }
+        public string Cl(string k) {            
+            if (Data == null) return "";
+            if (!Data.ContainsKey(k)) return "";
+            return Data[k];
+        }
+        public Dictionary<string,string>.KeyCollection Keys {
+            get {
+                if (Data == null) Data = new Dictionary<string, string>();
+                return Data.Keys;
+            }
+        }
 
-        public void Df(string k,string v) { Data[k] = v; }
 
     }
 
@@ -67,8 +77,8 @@ namespace TeddyBear{
 
     class TeddyMap {
         TJCRDIR TextureDir;
-        SortedDictionary<string, TeddyZoneName> ZoneNameMap = new SortedDictionary<string, TeddyZoneName>();
-        SortedDictionary<string, TeddyLayer> Layers = new SortedDictionary<string, TeddyLayer>();
+        public SortedDictionary<string, TeddyZoneName> ZoneNameMap = new SortedDictionary<string, TeddyZoneName>();
+        public SortedDictionary<string, TeddyLayer> Layers = new SortedDictionary<string, TeddyLayer>();
         public SortedDictionary<string, string> MetaData = new SortedDictionary<string, string>();
         public int GridX, GridY;
         public int SizeX, SizeY;
@@ -77,9 +87,12 @@ namespace TeddyBear{
         // Objects
         int OW = 0;
         int OH = 0;
+
+        public int OWidth { get { return OW; } }
+        public int OHeight { get { return OH; } }
         List<TeddyObject>[,] Objects;
 
-        List<TeddyObject> ObjectList(int x,int y) {
+        public List<TeddyObject> ObjectList(int x,int y) {
 
             if (Objects[x, y] == null) Objects[x, y] = new List<TeddyObject>();
 
