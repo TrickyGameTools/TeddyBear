@@ -11,6 +11,10 @@ namespace TeddyEdit
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        int MX = 0;
+        int MY = 0;
+        Texture2D MousePointer;
+        SpriteBatch SB;
 
         public Game1()
         {
@@ -26,7 +30,19 @@ namespace TeddyEdit
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            ProjectData.InitJCRDrivers();
+
+            // ScreenSize
+            graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+            graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+            graphics.IsFullScreen = true;
+            graphics.ApplyChanges();
+
+            // Sprite Batch
+            SB = new SpriteBatch(GraphicsDevice);
+
+            // Mouse Pointer
+            MousePointer = ProjectData.GetTex(GraphicsDevice,"MousePointer.png");
 
             base.Initialize();
         }
@@ -59,12 +75,24 @@ namespace TeddyEdit
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            // This line will for now remain, but may have to leave once the editor is really getting to move 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
             // TODO: Add your update logic here
+            var mstate = Mouse.GetState();
+            MX = mstate.X;
+            MY = mstate.Y;
 
             base.Update(gameTime);
+        }
+
+        Vector2 DrawTexVec = new Vector2();
+        void DrawTex(Texture2D tex,int x,int y)
+        {
+            DrawTexVec.X = x;
+            DrawTexVec.Y = y;
+            SB.Draw(tex, DrawTexVec, Color.White);
         }
 
         /// <summary>
@@ -73,7 +101,10 @@ namespace TeddyEdit
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
+            SB.Begin();
+            DrawTex(MousePointer, MX, MY);
+            SB.End();
 
             // TODO: Add your drawing code here
 
