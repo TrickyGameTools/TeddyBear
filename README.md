@@ -26,6 +26,12 @@ subfolder | contains
 TeddyClass  | This will contain some class files written in C# to load and show TeddyBear maps. Even manipulation will be possible (psst. the editor uses these classes itself, as well) :P
 TeddyEdit   | This will be the editor. The first model is set up with MonoGame. If that remains that way will remain to be seen, but for now it should do.
 TeddyLaunch | The launcher
+TeddyWizard | The project creation wizards
+
+# Third party requirements for compiling
+
+The wizard and the launcher should not require anything that Visual Studio 2017 cannot provide. Both are WPF applications.
+The Editor has been written in MonoGame, which should be installed after Visual Studio 2017 has been installed.
 
 # Compiling building
 
