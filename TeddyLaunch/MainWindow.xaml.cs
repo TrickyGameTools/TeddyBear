@@ -129,8 +129,13 @@ namespace TeddyBear
 
         private void PrjLoad_Click(object sender, RoutedEventArgs e) {
             string SelPrj = (string)PrjSelect.SelectedValue;
-            if (SelPrj=="*New Project*") {
-                Process.Start($"{qstr.ExtractDir(MyExe)}TeddyWizard.exe");
+            if (SelPrj=="**NEW PROJECT**") {
+                var wizard = $"{qstr.ExtractDir(MyExe)}/TeddyWizard.exe";
+                try {
+                    Process.Start(wizard);
+                } catch (Exception err) {
+                    MessageBox.Show($"Launching the project creation wizard failed!\n{err.Message}\n\n{wizard}");                    
+                }
                 return;
             }
         }
