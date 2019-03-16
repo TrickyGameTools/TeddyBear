@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.03.15
+// Version: 19.03.16
 // EndLic
+
 
 using System;
 using System.IO;
@@ -51,7 +52,7 @@ namespace TeddyWizard
     {
         public MainWindow()
         {
-            MKL.Version("TeddyBear - MainWindow.xaml.cs","19.03.15");
+            MKL.Version("TeddyBear - MainWindow.xaml.cs","19.03.16");
             MKL.Lic    ("TeddyBear - MainWindow.xaml.cs","GNU General Public License 3");
             InitializeComponent();
             MessageBox.Show("This wizard will create only a very simplistic project. If you want TeddyBear to have more power than this wizard can provide, please seek out the Wiki pages on GitHub on what you all can do", "TeddyWizard");
