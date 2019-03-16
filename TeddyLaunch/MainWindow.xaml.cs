@@ -39,6 +39,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.IO;
 
@@ -95,7 +96,7 @@ namespace TeddyBear
         public MainWindow()
         {
             InitializeComponent();
-            if (!System.IO.File.Exists(GINIFILE)) QuickStream.SaveString(GINIFILE, "[rem]\nTeddybear knows nothing yet! Boring, huh?\n");
+            if (!File.Exists(GINIFILE)) QuickStream.SaveString(GINIFILE, "[rem]\nTeddybear knows nothing yet! Boring, huh?\n");
             config = GINI.ReadFromFile(GINIFILE);
             if (config.C("Platform") == "") {
                 var p = new string[] { "Windows", "Linux","***" };
@@ -144,14 +145,30 @@ namespace TeddyBear
         #region Chaining with the wizard or the editor    
         private void PrjLoad_Click(object sender, RoutedEventArgs e) {
             string SelPrj = (string)PrjSelect.SelectedValue;
+            string SelMap = (string)PrjMapSelect.SelectedValue;
+            string mapfile = "";
             if (SelPrj=="**NEW PROJECT**") {
-                var wizard = $"{qstr.ExtractDir(MyExe)}/TeddyWizard.exe";
+                var wizard = $"{qstr.ExtractDir(MyExe)}/TeddyWizard.exe".Replace("\\","/");
                 try {
                     Process.Start(wizard);
                 } catch (Exception err) {
                     MessageBox.Show($"Launching the project creation wizard failed!\n{err.Message}\n\n{wizard}");                    
                 }
                 return;
+            }
+            if (SelMap == "**NEW MAP**") {
+                var prjallowregex = new Regex(@"^[a-zA-Z0-9_ ]+$");
+                if (!prjallowregex.IsMatch(NewName.Text)) {
+                    MessageBox.Show("Map names may only contain letters, numbers underscores and spaces");
+                    return;
+                }
+                mapfile = NewName.Text.Trim();
+            } else { mapfile = SelMap; }
+            var editor = $"{qstr.ExtractDir(MyExe)}/TeddyEdit.exe".Replace("\\","/");
+            try {
+                Process.Start(editor, $"\"{SelPrj}\" \"{mapfile}\"");
+            } catch (Exception err) {
+                MessageBox.Show($"Launching the edit failed!\n{err.Message}\n\n{editor}");
             }
         }
         #endregion

@@ -6,7 +6,13 @@
         xmlns:local="clr-namespace:TeddyBear"
         mc:Ignorable="d"
         Title="TeddyBear" Height="396.37" Width="791.176">
-    <Grid Background="#FF020100" Margin="0,0,2,0">
+    <Grid Margin="0,0,2,0">
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FF120019" Offset="0"/>
+                <GradientStop Color="#FB191200" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
         <!-- Not working due to a bug in Visual Studio!
         <Grid.Background>
             <ImageBrush ImageSource="/TeddyBear;component/metal.jpg" TileMode="Tile" Stretch="None" AlignmentY="Top" ViewportUnits="Absolute" Viewport="0,0,300,50" />
