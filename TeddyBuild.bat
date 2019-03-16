@@ -44,20 +44,11 @@
 :BUILDEDITOR
    echo Compiling Editor
    cd TeddyEdit
-   %TRICKYMSBUILD% /p:Configuration=Release TeddyEdit.sln > ..\ErrorLog\Edit.txt
+   "%TRICKYMSBUILD%" /p:Configuration=Release TeddyEdit.sln > ..\ErrorLog\Edit.txt
    if errorlevel 1 goto ERROREDITOR
    cd ..
    goto DORELEASE
 
-
-:DORELEASE
-   echo:Creating Release
-   copy TeddyLaunch\bin\release\*.exe Release
-   copy TeddyWizard\bin\release\*.exe Release
-   copy TeddyEditor\bin\release\*.exe Release
-   goto FINALE
-   
-   
 :ERROREDITOR
    cd ..
    cls
@@ -65,9 +56,25 @@
    echo:
    type ErrorLog\Edit.txt
    goto FINALE
+
+
+:DORELEASE
+   echo:Creating Release
+   echo:Copying Launcher
+   copy TeddyLaunch\bin\release\*.exe Release
+   echo:Copying Wizard
+   copy TeddyWizard\bin\release\*.exe Release
+   echo:Copying Editor
+   copy TeddyEdit\bin\Windows\x86\Release\*.exe Release
+   copy TeddyEdit\bin\Windows\x86\Release\*.dll Release
+   copy TeddyEdit\bin\Windows\x86\Release\*.xml Release
+   goto FINALE
+   
+   
    
 :FINALE
    echo:
    echo:Have a nice day!
+   
    
    
