@@ -45,9 +45,29 @@ namespace TeddyBear{
     }
 
     class TeddyMap {
+        TJCRDIR TexDir;
         SortedDictionary<string, TeddyLayer> Layers = new SortedDictionary<string, TeddyLayer>();
+        public SortedDictionary<string, string> MetaData = new SortedDictionary<string, string>();
+
+        private TeddyMap() { } // Does that block from using 'new' in stead?
+
+        static public TeddyMap Load(TJCRDIR MapDir,TJCRDIR TexDir,string Map) {
+            var ret = new TeddyMap();
+            // Load code comes later!
+            return ret;
+        }
+
+        static public TeddyMap Load(TJCRDIR Dir,string map) => Load(Dir, Dir, map);
+        static public TeddyMap Load(string MapDir, string TexDir, string Map) => Load(JCR6.Dir(MapDir), JCR6.Dir(TexDir), Map);
+        static public TeddyMap Load(string Dir,string map) {
+            var jcr = JCR6.Dir(Dir);
+            return Load(jcr, jcr, map);
+        }
+        static public TeddyMap Load(string map) => Load(map, "");
 
         public void NewLayer(string name,int w,int h) { Layers[name] = new TeddyLayer(w, h); }
+        public void DelLayer(string name) => Layers.Remove(name); 
+
     }
 
     class Core{
