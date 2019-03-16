@@ -20,6 +20,7 @@
 
 
 
+
 using TrickyUnits;
 using System;
 using System.Collections.Generic;
@@ -47,14 +48,21 @@ namespace TeddyBear{
     }
 
     class TeddyObject {
+
         Dictionary<string, string> Data;
+
         public string ObjType = "";
+
         public void Df(string k,string v) { Data[k] = v; }
+
     }
 
     class TeddyZoneName { // This is only to form a return value to the ZName method in the 'TeddyBear' method
+
         public string[] Name = new string[256];
+
     }
+
 
 
     class TeddyMap {
@@ -62,25 +70,27 @@ namespace TeddyBear{
         SortedDictionary<string, TeddyZoneName> ZoneNameMap = new SortedDictionary<string, TeddyZoneName>();
         SortedDictionary<string, TeddyLayer> Layers = new SortedDictionary<string, TeddyLayer>();
         public SortedDictionary<string, string> MetaData = new SortedDictionary<string, string>();
-        int GridX, GridY;
-        int SizeX, SizeY;
-        bool TexResize;
-        string[] Texture=new string[256];
+        public int GridX, GridY;
+        public int SizeX, SizeY;
+        public bool TexResize;
+        public string[] Texture=new string[256];
         // Objects
         int OW = 0;
         int OH = 0;
         List<TeddyObject>[,] Objects;
 
         List<TeddyObject> ObjectList(int x,int y) {
+
             if (Objects[x, y] == null) Objects[x, y] = new List<TeddyObject>();
+
             return Objects[x, y];
+
         }
 
         /// <summary>
         /// When set to 'true' your program will crash whenever an error happens and throw an exception. When set to 'false', you can just read out the 'Error' string
         /// </summary>
         public bool crash = false;
-
         private string LastError = "Ok";
         /// <summary>
         /// Contains the error message, if something went wrong.
@@ -89,10 +99,13 @@ namespace TeddyBear{
         /// </summary>
         public string Error { get => LastError; }
         string TeddyError {
+
             set {
                 LastError = value;
                 if (crash && value!="Ok") throw new Exception($"TeddyBear Error: {value}");
+
             }
+
         }
 
         public TeddyZoneName ZName(string key) {
@@ -110,8 +123,7 @@ namespace TeddyBear{
 
         private TeddyMap() { } // Does that block from using 'new' in stead?
 
-        TeddyMap TeddyLE(string s)
-        {
+        TeddyMap TeddyLE(string s) {
             TeddyError = s;
             return null;
         }
@@ -191,6 +203,7 @@ namespace TeddyBear{
                 } while (laygoing);
                 BT.Close();
             }
+
             // Load the objects (if available)
             if (MapDir.Exists($"{MN}Objects")) { //If MapContains(JCR.Entries, Upper(MN)+"OBJECTS")
                 BT = MapDir.ReadFile(MN + "Objects");
@@ -220,10 +233,10 @@ namespace TeddyBear{
                 }
                 BT.Close();
             }
-            //' Load the general data (if available)
+
+            // Load the general data (if available)
             if (MapDir.Exists($"{MN}DATA")) { //MapContains(JCR.Entries, Upper(MN)+"DATA")
                 ret.MetaData = MapDir.LoadStringMapSorted(MN + "Data");
-
             }
             return ret;
         }
@@ -237,13 +250,14 @@ namespace TeddyBear{
         static public TeddyMap Load(string map) => Load(map, "");
 
         public void NewLayer(string name,int w,int h,int t=0) { Layers[name] = new TeddyLayer(w, h,t); }
+
         public void NewLayer(string name) => NewLayer(name, SizeX, SizeY);
         public void DelLayer(string name) => Layers.Remove(name); 
 
     }
 
     class Core{
-        static void Init(){
+        static public void Init(){
             MKL.Version("TeddyBear - TeddyCore.cs","19.03.16");
             MKL.Lic    ("TeddyBear - TeddyCore.cs","ZLib License");
         }
