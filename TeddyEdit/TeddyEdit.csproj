@@ -164,6 +164,9 @@
     <Compile Include="..\..\TrickyUnits\qstream.cs">
       <Link>Imported\units\qstream.cs</Link>
     </Compile>
+    <Compile Include="..\TeddyClass\TeddyCore.cs">
+      <Link>Imported\TeddyBear\TeddyCore.cs</Link>
+    </Compile>
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectData.cs" />
