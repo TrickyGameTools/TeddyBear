@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TeddyBear"
         mc:Ignorable="d"
-        Title="TeddyBear" Height="374.37" Width="791.176">
+        Title="TeddyBear" Height="396.37" Width="791.176">
     <Grid Background="#FF020100" Margin="0,0,2,0">
         <!-- Not working due to a bug in Visual Studio!
         <Grid.Background>
@@ -18,8 +18,10 @@
         <ListBox x:Name="PrjSelect" HorizontalAlignment="Left" Height="183" Margin="234,70,0,0" VerticalAlignment="Top" Width="294" SelectionChanged="PrjSelect_SelectionChanged" Background="#FF001219" Foreground="#FF00B4FF"/>
         <Button x:Name="PrjLoad" Content="Load" HorizontalAlignment="Left" Height="45" Margin="234,258,0,0" VerticalAlignment="Top" Width="150" Click="PrjLoad_Click"/>
         <Button x:Name="PrjRenew" Content="Renew" HorizontalAlignment="Left" Height="45" Margin="393,258,0,0" VerticalAlignment="Top" Width="135" Click="PrjRenew_Click"/>
-        <ListBox x:Name="PrjMapSelect" HorizontalAlignment="Left" Height="233" Margin="533,70,0,0" VerticalAlignment="Top" Width="234" Background="#FF001219" BorderBrush="#FF00B4FF" SelectionChanged="PrjMapSelect_SelectionChanged"/>
-        <Label Content="(c) Copyright Jeroen P. Broks, licensed under the General Public License 3" HorizontalAlignment="Center" Height="25" Margin="10,308,0,0" VerticalAlignment="Top" Width="740" Foreground="#FFFFB400"/>
+        <ListBox Foreground="#ff00b4ff" x:Name="PrjMapSelect" HorizontalAlignment="Left" Height="183" Margin="533,70,0,0" VerticalAlignment="Top" Width="234" Background="#FF001219" BorderBrush="#FF00B4FF" SelectionChanged="PrjMapSelect_SelectionChanged" />
+        <Label x:Name="NewNameLabel" Content="New Map Name" RenderTransformOrigin="0.632,0.346" Margin="533,253,42,64" Foreground="#ffffb400"  />
+        <TextBox x:Name="NewName" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="233" Margin="538,280,0,0" Foreground="#ffb400ff" Background="#ff0b000f" RenderTransformOrigin="0.506,1.13" />
+        <Label Content="(c) Copyright Jeroen P. Broks, licensed under the General Public License 3" HorizontalAlignment="Center" Height="25" Margin="210,330,172,0" VerticalAlignment="Top" Width="399" Foreground="#FFFFB400" RenderTransformOrigin="0.727,1.68"/>
 
     </Grid>
 </Window>

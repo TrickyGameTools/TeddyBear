@@ -24,6 +24,8 @@
 // Version: 19.03.15
 // EndLic
 
+
+#region using a lot of stuff
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +43,8 @@ using System.Diagnostics;
 using System.IO;
 
 using TrickyUnits;
+
+#endregion region
 
 namespace TeddyBear
 {
@@ -63,18 +67,28 @@ namespace TeddyBear
                 PrjSelect.IsEnabled = false;
                 PrjMapSelect.IsEnabled = false;
                 PrjLoad.IsEnabled = false;
+                NewNameLabel.Visibility = Visibility.Hidden;
+                NewName.Visibility=Visibility.Hidden;
                 return;
             }
+            var newstuff = Visibility.Hidden;
             PrjSelect.IsEnabled = true;
             PrjMapSelect.IsEnabled = PrjSelect.SelectedItem != null;
             PrjLoad.IsEnabled = PrjMapSelect.SelectedItem != null;
             PrjLoad.Content = "Load";
             string SelPrj = (string)PrjSelect.SelectedValue;
+            string SelMap = (string)PrjMapSelect.SelectedValue;
             if (SelPrj=="**NEW PROJECT**") {
                 PrjLoad.Content = "Create Project";
                 PrjLoad.IsEnabled = true;
                 PrjMapSelect.IsEnabled = false;
-            } 
+            }  else {
+                //MessageBox.Show(SelMap);
+                if (SelMap == "**NEW MAP**") newstuff = Visibility.Visible;
+            }
+            NewName.Visibility = newstuff;
+            NewNameLabel.Visibility = newstuff;
+
 
         }
 
@@ -127,6 +141,7 @@ namespace TeddyBear
             AutoEnable();
         }
 
+        #region Chaining with the wizard or the editor    
         private void PrjLoad_Click(object sender, RoutedEventArgs e) {
             string SelPrj = (string)PrjSelect.SelectedValue;
             if (SelPrj=="**NEW PROJECT**") {
@@ -139,6 +154,7 @@ namespace TeddyBear
                 return;
             }
         }
+        #endregion
 
         private void PrjRenew_Click(object sender, RoutedEventArgs e) {
             if (wpchanged) {
@@ -173,16 +189,22 @@ namespace TeddyBear
             AutoEnable();
         }
 
+        void ScanMaps() {
+            string SelPrj = (string)PrjSelect.SelectedValue;
+            PrjMapSelect.Items.Clear();
+            if (SelPrj == "" || SelPrj[0] == '*') return;
+            PrjMapSelect.Items.Add("**NEW MAP**");
+        }
+
 
         private void PrjMapSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
+        {            
             AutoEnable();
-
         }
 
         private void PrjSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //MessageBox.Show("Test");
+            ScanMaps();
             AutoEnable();
         }
     }
