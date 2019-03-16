@@ -237,7 +237,7 @@ namespace TeddyBear{
         static public TeddyMap Load(string map) => Load(map, "");
 
         public void NewLayer(string name,int w,int h,int t=0) { Layers[name] = new TeddyLayer(w, h,t); }
-                public void NewLayer(string name) => NewLayer(name, SizeX, SizeY);
+        public void NewLayer(string name) => NewLayer(name, SizeX, SizeY);
         public void DelLayer(string name) => Layers.Remove(name); 
 
     }
