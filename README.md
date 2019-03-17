@@ -2,6 +2,8 @@
 
 This is still a work in progress... As long as this notice is up, please don't try this, as it likely won't work anyway (if it works at all).
 
+![](https://raw.githubusercontent.com/TrickyGameTools/TeddyBear/master/Icons/TeddyBear.png)
+
 # TeddyBear
 
 Tile based map editor with some nice features
