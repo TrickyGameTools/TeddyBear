@@ -24,9 +24,12 @@
 // Version: 19.03.16
 // EndLic
 
+#region Using statements... in case you cared...
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using TrickyUnits;
+#endregion
 
 namespace TeddyEdit
 {
@@ -41,6 +44,7 @@ namespace TeddyEdit
         int MY = 0;
         Texture2D MousePointer;
         SpriteBatch SB;
+        
 
         public Game1()
         {
@@ -70,6 +74,11 @@ namespace TeddyEdit
             // Mouse Pointer
             MousePointer = ProjectData.GetTex(GraphicsDevice,"MousePointer.png");
 
+            // TQMG
+            TQMG.Init(graphics, GraphicsDevice, SB, ProjectData.JCR); 
+
+
+            // Final
             base.Initialize();
         }
 

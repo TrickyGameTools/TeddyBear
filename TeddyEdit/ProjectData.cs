@@ -39,6 +39,7 @@ namespace TeddyEdit
 {
     class ProjectData {
         static public string MyExe => System.Reflection.Assembly.GetEntryAssembly().Location;
+        
 
         static public string JCRFile {
 #if DEBUG
