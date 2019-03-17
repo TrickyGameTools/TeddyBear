@@ -129,8 +129,7 @@ namespace TeddyEdit
         {
             GraphicsDevice.Clear(Color.Black);
             SB.Begin();
-            DrawTex(MousePointer, MX, MY);
-            
+            DrawTex(MousePointer, MX, MY);            
             SB.End();
 
             // TODO: Add your drawing code here
