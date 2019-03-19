@@ -29,6 +29,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TrickyUnits;
+using TeddyEdit.Stages;
+using System.Collections.Generic;
 #endregion
 
 namespace TeddyEdit
@@ -44,7 +46,9 @@ namespace TeddyEdit
         int MY = 0;
         Texture2D MousePointer;
         SpriteBatch SB;
-        
+        BasisStage Current = null;
+        Dictionary<string, BasisStage> Stages = new Dictionary<string, BasisStage>();
+
 
         public Game1()
         {
@@ -110,15 +114,18 @@ namespace TeddyEdit
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            var gpstate = GamePad.GetState(PlayerIndex.One);
+            var kbstate = Keyboard.GetState();
             // This line will for now remain, but may have to leave once the editor is really getting to move 
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (gpstate.Buttons.Back == ButtonState.Pressed || kbstate.IsKeyDown(Keys.Escape))
                 Exit();
 
             // TODO: Add your update logic here
             var mstate = Mouse.GetState();
             MX = mstate.X;
             MY = mstate.Y;
-            
+
+            if (Current != null) Current.Update(this,gameTime, mstate, gpstate, kbstate);
             base.Update(gameTime);
         }
 
@@ -138,6 +145,7 @@ namespace TeddyEdit
         {
             GraphicsDevice.Clear(Color.Black);
             SB.Begin();
+            if (Current != null) Current.Draw(this, gameTime);
             DrawTex(MousePointer, MX, MY);            
             SB.End();
 
@@ -145,5 +153,9 @@ namespace TeddyEdit
 
             base.Draw(gameTime);
         }
+
+        public void SetStage(string stagename) { SetStage(Stages[stagename]); }
+        public void SetStage(object stage) { Current = (BasisStage)stage; }
+
     }
 }
