@@ -149,6 +149,9 @@
     <Compile Include="..\..\JCR6\jcr6.cs">
       <Link>Imported\JCR6\jcr6.cs</Link>
     </Compile>
+    <Compile Include="..\..\TQMG\TQMG.cs">
+      <Link>Imported\TQMG\TQMG.cs</Link>
+    </Compile>
     <Compile Include="..\..\TrickyUnits\Dirry.cs">
       <Link>Imported\units\Dirry.cs</Link>
     </Compile>
