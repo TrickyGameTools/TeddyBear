@@ -24,6 +24,8 @@
 // Version: 19.03.16
 // EndLic
 
+#define debuglog
+
 
 using System;
 using System.Collections.Generic;
@@ -38,6 +40,9 @@ using UseJCR6;
 namespace TeddyEdit
 {
     class ProjectData {
+#if debuglog
+        static QuickStream dbglogbt = QuickStream.WriteFile("E:/Home/Temp/TeddyLog");
+#endif
         static public string MyExe => System.Reflection.Assembly.GetEntryAssembly().Location;
         static public string[] args => Environment.GetCommandLineArgs();
         static string _prj;
@@ -85,6 +90,12 @@ namespace TeddyEdit
 
         public static void InitJCRDrivers() {
             JCR6_lzma.Init();
+        }
+
+        public static void Log(string message) {
+#if debuglog
+            dbglogbt.WriteString($"{message}\n", true);
+#endif
         }
     }
 }

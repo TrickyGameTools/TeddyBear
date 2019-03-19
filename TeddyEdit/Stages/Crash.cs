@@ -22,11 +22,12 @@ namespace TeddyEdit.Stages
 
         override public void Draw(Game1 game, GameTime gameTime) {
             var y = 10;
-            //throw new Exception("FORCE"); // must be rem in release
+            // throw new Exception("FORCE"); // must be rem in release
             TQMG.Color(255, 0, 0);
             foreach (TQMGText T in TextList) {
                 T.Draw(10, y);
                 TQMG.Color(255, 180, 0);
+                y += 20;
             }
         }
 
@@ -38,6 +39,7 @@ namespace TeddyEdit.Stages
                 TextList.Add(fnt.Text(l));
             }
             TextList.Add(fnt.Text("Hit enter or click the mouse to leave this program!"));
+            ProjectData.Log($"{(char)27}[31mERROR!!!{(char)27}[0m\n{ErrorMessage}");
             Game.SetStage(new Crash());
         }
     }
