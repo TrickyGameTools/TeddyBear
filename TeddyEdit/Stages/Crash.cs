@@ -22,8 +22,11 @@ namespace TeddyEdit.Stages
 
         override public void Draw(Game1 game, GameTime gameTime) {
             var y = 10;
+            //throw new Exception("FORCE"); // must be rem in release
+            TQMG.Color(255, 0, 0);
             foreach (TQMGText T in TextList) {
                 T.Draw(10, y);
+                TQMG.Color(255, 180, 0);
             }
         }
 
@@ -31,7 +34,7 @@ namespace TeddyEdit.Stages
             Game = getgame;
             var fnt = TQMG.GetFont("fonts/SulphurPoint-Regular.12.jfbf");
             TextList.Add(fnt.Text("Error!"));
-            foreach (string l in ErrorMessage.Split('\n'){
+            foreach (string l in ErrorMessage.Split('\n')){
                 TextList.Add(fnt.Text(l));
             }
             TextList.Add(fnt.Text("Hit enter or click the mouse to leave this program!"));

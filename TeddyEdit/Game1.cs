@@ -79,7 +79,17 @@ namespace TeddyEdit
             MousePointer = ProjectData.GetTex(GraphicsDevice,"MousePointer.png");
 
             // TQMG
-            TQMG.Init(graphics, GraphicsDevice, SB, ProjectData.JCR); 
+            TQMG.Init(graphics, GraphicsDevice, SB, ProjectData.JCR);
+
+            // Do we have a project and a map?
+            if (ProjectData.args.Length < 2)
+                Crash.Error(this,"No arguments given!\nUsage: TeddyEdit <project> <map>\n\nIf you are not sure how to use this tool, use the launcher in stead!");
+            else {
+                ProjectData.Project = ProjectData.args[0];
+                if (!ProjectData.AllWell) { Crash.Error(this,"Project loading failed!"); } else {
+
+                }
+            }
 
 
             // Final

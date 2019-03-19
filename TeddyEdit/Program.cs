@@ -42,7 +42,6 @@ namespace TeddyEdit
         static void Main()
         {
             using (var game = new Game1())
-                //game.Run(Game1.graphics);
                 game.Run();
         }
     }

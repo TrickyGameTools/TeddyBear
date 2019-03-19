@@ -39,7 +39,21 @@ namespace TeddyEdit
 {
     class ProjectData {
         static public string MyExe => System.Reflection.Assembly.GetEntryAssembly().Location;
-        
+        static public string[] args => Environment.GetCommandLineArgs();
+        static string _prj;
+        static public TGINI ProjectConfig { get; private set; } = null;
+        static public bool AllWell { get; private set; } = true;
+        static public string Project
+        {
+            get => _prj;
+            set
+            {
+                if (_prj != "") throw new Exception("Project overdefinition");
+                _prj = value;
+                ProjectConfig = GINI.ReadFromFile(value);
+                if (ProjectConfig == null) AllWell = false;
+            }
+        } 
 
         static public string JCRFile {
 #if DEBUG
