@@ -6,6 +6,9 @@
 # Some building crap
 ErrorLog/*.txt
 
+# temp
+temp.*
+
 # MKL nono
 *.MKL.gini
 MKL_Backup
