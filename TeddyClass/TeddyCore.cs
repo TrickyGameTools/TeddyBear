@@ -277,49 +277,31 @@ namespace TeddyBear{
 
         #region NewMap
         static public TeddyMap Create(int w, int h, int gridx, int gridy, string[] layers, TJCRDIR TexDir) {
-
             var ret = new TeddyMap();
-
             #region Object Map
-
             ret.OW = w;
-
             ret.OH = h;
-
             ret.Objects = new List<TeddyObject>[w, h];
-
             #endregion
 
             #region Map format
-
             ret.SizeX = w;
-
             ret.SizeY = h;
-
             ret.GridX = gridx;
-
             ret.GridY = gridy;
-
             #endregion
 
             #region Layer Creation
-
             foreach (string lay in layers) ret.NewLayer(lay,w,h);
-
             #endregion
 
             #region Texture Directory
-
             ret.TextureDir = TexDir;
-
             #endregion
 
             #region return the result
-
             return ret;
-
             #endregion
-
         }
         #endregion
 
