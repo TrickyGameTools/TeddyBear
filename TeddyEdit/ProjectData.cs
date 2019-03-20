@@ -25,18 +25,21 @@
 // EndLic
 
 
+
 #define debuglog
 
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Graphics;
 
 using TrickyUnits;
 using UseJCR6;
+using TeddyBear;
+using TeddyEdit.Stages;
 
 namespace TeddyEdit
 {
@@ -44,22 +47,61 @@ namespace TeddyEdit
 #if debuglog
         static QuickStream dbglogbt = QuickStream.WriteFile("E:/Home/Temp/TeddyLog");
 #endif
+        static string GlobalConfigFile => Dirry.C("$AppSupport$/TeddyBaseConfig.GINI");
+        static readonly TGINI GlobalConfig = GINI.ReadFromFile(GlobalConfigFile);
+        static public string WorkSpace => Dirry.AD(GlobalConfig.C("Workspace"));
+        static string Platform => GlobalConfig.C("Platform");
+        static AltDrivePlaforms PlatID { get {
+                switch (Platform) {
+                    case "Windows": return AltDrivePlaforms.Windows;
+                    case "Linux": return AltDrivePlaforms.Linux;
+                    default: throw new Exception($"Unknown platform {Platform}");
+                }
+            } }
+        static Game1 Game;
         static public string MyExe => System.Reflection.Assembly.GetEntryAssembly().Location;
         static public string[] args => Environment.GetCommandLineArgs();
-        static string _prj;
+        static string _prj="";
         static public TGINI ProjectConfig { get; private set; } = null;
         static public bool AllWell { get; private set; } = true;
+        static public TeddyMap Map { get; private set; } = null;
+        static public TJCRDIR texJCR { get; private set; } = null;
+        static public int MapWidth => qstr.ToInt(GlobalConfig.C("SIZEX"));
+        static public int MapHeight => qstr.ToInt(GlobalConfig.C("SIZEY"));
+        static public int MapGridX => qstr.ToInt(GlobalConfig.C("GRIDX"));
+        static public int MapGridY => qstr.ToInt(GlobalConfig.C("GRIDY"));
+        static public string[] MapLayers => GlobalConfig.List("Layers").ToArray();
         static public string Project
         {
             get => _prj;
             set
             {
-                if (_prj != "") throw new Exception("Project overdefinition");
-                _prj = value;
-                ProjectConfig = GINI.ReadFromFile(value);
+                if (_prj != "") throw new Exception($"Project overdefinition\n({_prj})");
+                Dirry.InitAltDrives(PlatID);
+                _prj = value;                
+                ProjectConfig = GINI.ReadFromFile($"{WorkSpace}/{value}/{value}.Project.GINI");
                 if (ProjectConfig == null) AllWell = false;
             }
-        } 
+        }
+
+        static string _map="";
+        static public string MapFile {
+            get => _map;
+            set {
+                if (_map != "") throw new Exception("Map overdefinition");
+                _map = value;
+                texJCR = new TJCRDIR();
+                foreach (string patch in ProjectConfig.List("Textures")) texJCR.PatchFile(patch);
+                if (!File.Exists(_map)) {
+                    Map = TeddyMap.Create(MapWidth, MapHeight, MapGridX, MapGridY, MapLayers, texJCR);
+                } else {
+                    var MJ = JCR6.Dir(_map);
+                    if (MJ == null) { Crash.Error(Game, $"Error loading map: {JCR6.JERROR}"); AllWell = false; return; }
+                    Map = TeddyMap.Load(MJ, texJCR, "");
+                }
+                if (Map==null) { Crash.Error(Game,$"Error loading map \"{_map}\""); AllWell = false; return; }
+            }
+        }
 
         static public string JCRFile {
 #if DEBUG
@@ -98,5 +140,7 @@ namespace TeddyEdit
             dbglogbt.WriteString($"{message}\n", true);
 #endif
         }
+
+        static public void SetGame(Game1 g) { Game = g; }
     }
 }

@@ -25,6 +25,7 @@
 // EndLic
 
 
+
 #region Using statements... in case you cared...
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -66,6 +67,7 @@ namespace TeddyEdit
         protected override void Initialize()
         {
             ProjectData.InitJCRDrivers();
+            ProjectData.SetGame(this);
 
             // ScreenSize
             graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
@@ -83,12 +85,24 @@ namespace TeddyEdit
             TQMG.Init(graphics, GraphicsDevice, SB, ProjectData.JCR);
 
             // Do we have a project and a map?
+#if DEBUG
+            if (false) { } // just some crap as things are different while debugging.
+#else
             if (ProjectData.args.Length < 2)
                 Crash.Error(this,"No arguments given!\nUsage: TeddyEdit <project> <map>\n \n If you are not sure how to use this tool, use the launcher in stead!");
+#endif
             else {
+#if DEBUG
+                ProjectData.Project = "Test";
+#else
                 ProjectData.Project = ProjectData.args[0];
-                if (!ProjectData.AllWell) { Crash.Error(this,"Project loading failed!"); } else {
-
+#endif
+                if (!ProjectData.AllWell) { Crash.Error(this, "Project loading failed!"); } else {
+#if DEBUG
+                    ProjectData.MapFile = "Test Map";
+#else
+                    ProjectData.MapFile = ProjectData.args[1];
+#endif
                 }
             }
 
