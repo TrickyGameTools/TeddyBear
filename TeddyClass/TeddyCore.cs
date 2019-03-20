@@ -1,7 +1,7 @@
 // Lic:
 // TeddyClass/TeddyCore.cs
 // TeddyBear Core
-// version: 19.03.16
+// version: 19.03.20
 // Copyright (C)  Jeroen P. Broks
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -17,6 +17,7 @@
 // misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 // EndLic
+
 
 
 
@@ -83,7 +84,7 @@ namespace TeddyBear{
         public int GridX, GridY;
         public int SizeX, SizeY;
         public bool TexResize;
-        public string[] Texture=new string[256];
+        public string[] Texture = new string[256];
         // Objects
         int OW = 0;
         int OH = 0;
@@ -92,7 +93,7 @@ namespace TeddyBear{
         public int OHeight { get { return OH; } }
         List<TeddyObject>[,] Objects;
 
-        public List<TeddyObject> ObjectList(int x,int y) {
+        public List<TeddyObject> ObjectList(int x, int y) {
 
             if (Objects[x, y] == null) Objects[x, y] = new List<TeddyObject>();
 
@@ -115,7 +116,7 @@ namespace TeddyBear{
 
             set {
                 LastError = value;
-                if (crash && value!="Ok") throw new Exception($"TeddyBear Error: {value}");
+                if (crash && value != "Ok") throw new Exception($"TeddyBear Error: {value}");
 
             }
 
@@ -142,6 +143,7 @@ namespace TeddyBear{
         }
 
         static public TeddyMap Load(TJCRDIR MapDir, TJCRDIR TexDir, string Map) {
+
             /*
              * This is DIRTY CODE STRAIGHT FROM HELL!
              * 
@@ -150,6 +152,9 @@ namespace TeddyBear{
              * Cut me some slack, will ya?
              * 
              */
+
+            #region Load Map
+            #region True Map Loader
             var ret = new TeddyMap();
             ret.TextureDir = TexDir;
             ret.TeddyError = "Ok";
@@ -254,13 +259,70 @@ namespace TeddyBear{
             return ret;
         }
 
-        static public TeddyMap Load(TJCRDIR Dir,string map) => Load(Dir, Dir, map);
+        #endregion
+        #region Overload load
+
+
+        static public TeddyMap Load(TJCRDIR Dir, string map) => Load(Dir, Dir, map);
         static public TeddyMap Load(string MapDir, string TexDir, string Map) => Load(JCR6.Dir(MapDir), JCR6.Dir(TexDir), Map);
-        static public TeddyMap Load(string Dir,string map) {
+        static public TeddyMap Load(string Dir, string map) {
             var jcr = JCR6.Dir(Dir);
             return Load(jcr, jcr, map);
         }
         static public TeddyMap Load(string map) => Load(map, "");
+
+        #endregion
+        #endregion
+
+
+        #region NewMap
+        static public TeddyMap Create(int w, int h, int gridx, int gridy, string[] layers, TJCRDIR TexDir) {
+
+            var ret = new TeddyMap();
+
+            #region Object Map
+
+            ret.OW = w;
+
+            ret.OH = h;
+
+            ret.Objects = new List<TeddyObject>[w, h];
+
+            #endregion
+
+            #region Map format
+
+            ret.SizeX = w;
+
+            ret.SizeY = h;
+
+            ret.GridX = gridx;
+
+            ret.GridY = gridy;
+
+            #endregion
+
+            #region Layer Creation
+
+            foreach (string lay in layers) ret.NewLayer(lay,w,h);
+
+            #endregion
+
+            #region Texture Directory
+
+            ret.TextureDir = TexDir;
+
+            #endregion
+
+            #region return the result
+
+            return ret;
+
+            #endregion
+
+        }
+        #endregion
+
 
         public void NewLayer(string name,int w,int h,int t=0) { Layers[name] = new TeddyLayer(w, h,t); }
 
@@ -271,7 +333,7 @@ namespace TeddyBear{
 
     class Core{
         static public void Init(){
-            MKL.Version("TeddyBear - TeddyCore.cs","19.03.16");
+            MKL.Version("TeddyBear - TeddyCore.cs","19.03.20");
             MKL.Lic    ("TeddyBear - TeddyCore.cs","ZLib License");
         }
     }
