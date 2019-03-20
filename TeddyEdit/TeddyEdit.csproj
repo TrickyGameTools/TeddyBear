@@ -179,6 +179,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stages\Abstract.cs" />
     <Compile Include="Stages\Crash.cs" />
+    <Compile Include="Stages\Main.cs" />
     <Compile Include="UserInterface.cs" />
   </ItemGroup>
   <ItemGroup>

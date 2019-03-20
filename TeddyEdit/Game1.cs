@@ -109,6 +109,8 @@ namespace TeddyEdit
 
             // Final
             base.Initialize();
+
+            if (ProjectData.AllWell) SetStage(Main.Me);
         }
 
         /// <summary>

@@ -35,7 +35,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using UseJCR6;
 using TrickyUnits;
 #endregion
 
@@ -56,13 +56,18 @@ namespace TeddyEdit {
         public PDMenu(int a_parent, string a_caption, int a_idout) {
             idout = a_idout;
             caption = a_caption;
-            parent = a_parent;
+            parent = a_parent;            
         }
     }
 
     static class UI {
 
         static SortedDictionary<PDMEN, string> PDM_Bar = new SortedDictionary<PDMEN, string>();
+        static SortedDictionary<PDMEN, TQMGText> PDM_Caption = new SortedDictionary<PDMEN, TQMGText>();
+        static public TQMGFont font20 { get; private set; }
+        static public TJCRDIR JCR { get; private set; }
+        static public Game1 Game { get; private set; }
+        static public TQMGImage back { get; private set; }
 
         static UI() {
             MKL.Version("TeddyBear - UserInterface.cs","19.03.20");
@@ -73,6 +78,27 @@ namespace TeddyEdit {
 #if supportscript
             PDM_Bar[PDMEN.Script] = "Script"
 #endif
+            font20 = TQMG.GetFont("fonts/SulphurPoint-Regular.20.jfbf");
+            foreach (PDMEN i in PDM_Bar.Keys) PDM_Caption[i] = font20.Text(PDM_Bar[i]);
+            back = TQMG.GetImage("metal.jpg");
         }
+
+        static public void DrawPDMenu()  {
+            int x = 10;
+            TQMG.UglyTile(back, 0, 0, ProjectData.Game.Window.ClientBounds.Width, 15);
+            foreach(PDMEN i in PDM_Caption.Keys) {
+                PDM_Caption[i].Draw(x, 5);
+                x += 20 + PDM_Caption[i].Width;
+            }
+
+        }
+
+        static public void DrawScreen() {
+            //DrawMap();
+            // DrawToolBox();
+            DrawPDMenu();
+            //DrawStatusBar();
+        }
+
     }
 }

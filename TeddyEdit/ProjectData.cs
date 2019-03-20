@@ -58,7 +58,7 @@ namespace TeddyEdit
                     default: throw new Exception($"Unknown platform {Platform}");
                 }
             } }
-        static Game1 Game;
+        static public Game1 Game { get; private set; }
         static public string MyExe => System.Reflection.Assembly.GetEntryAssembly().Location;
         static public string[] args => Environment.GetCommandLineArgs();
         static string _prj="";
