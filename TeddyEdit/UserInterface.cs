@@ -27,6 +27,7 @@
 
 
 
+
 #undef supportscript
 
 #region Use this!
@@ -35,6 +36,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TrickyUnits;
 #endregion
 
 namespace TeddyEdit {
@@ -63,6 +65,8 @@ namespace TeddyEdit {
         static SortedDictionary<PDMEN, string> PDM_Bar = new SortedDictionary<PDMEN, string>();
 
         static UI() {
+            MKL.Version("TeddyBear - UserInterface.cs","19.03.20");
+            MKL.Lic    ("TeddyBear - UserInterface.cs","GNU General Public License 3");
             PDM_Bar[PDMEN.File] = "File";
             PDM_Bar[PDMEN.Textures] = "Textures";
             PDM_Bar[PDMEN.Objects] = "Objects";
