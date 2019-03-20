@@ -28,6 +28,7 @@
 
 
 
+
 #undef supportscript
 
 #region Use this!
@@ -37,6 +38,7 @@ using System.Linq;
 using System.Text;
 using UseJCR6;
 using TrickyUnits;
+using Microsoft.Xna.Framework.Input;
 #endregion
 
 namespace TeddyEdit {
@@ -68,6 +70,9 @@ namespace TeddyEdit {
         static public TJCRDIR JCR { get; private set; }
         static public Game1 Game { get; private set; }
         static public TQMGImage back { get; private set; }
+        static TQMGText ProjectAndFile;
+
+        static bool MenuOpen = false;
 
         static UI() {
             MKL.Version("TeddyBear - UserInterface.cs","19.03.20");
@@ -81,6 +86,7 @@ namespace TeddyEdit {
             font20 = TQMG.GetFont("fonts/SulphurPoint-Regular.20.jfbf");
             foreach (PDMEN i in PDM_Bar.Keys) PDM_Caption[i] = font20.Text(PDM_Bar[i]);
             back = TQMG.GetImage("metal.jpg");
+            ProjectAndFile = font20.Text($"Project: {ProjectData.Project}; Map: {ProjectData.MapFile}");
         }
 
         static public void DrawPDMenu()  {
@@ -93,11 +99,19 @@ namespace TeddyEdit {
 
         }
 
-        static public void DrawScreen() {
+        static public void DrawStatusBar(MouseState ms) {
+            TQMG.UglyTile(back, 0, ProjectData.Game.Window.ClientBounds.Height - 25, ProjectData.Game.Window.ClientBounds.Width, 25);
+            if (ms.Y>10 && (!MenuOpen)) {
+                ProjectAndFile.Draw(5, ProjectData.Game.Window.ClientBounds.Height - 22);
+                font20.DrawText($"Screen: {ProjectData.Game.Window.ClientBounds.Width}x{ProjectData.Game.Window.ClientBounds.Height}; Mouse: ({ms.X},{ms.Y})", ProjectData.Game.Window.ClientBounds.Width - 5, ProjectData.Game.Window.ClientBounds.Height - 22, TQMG_TextAlign.Right);
+            }
+        }
+
+        static public void DrawScreen(MouseState ms) {
             //DrawMap();
             // DrawToolBox();
             DrawPDMenu();
-            //DrawStatusBar();
+            DrawStatusBar(ms);
         }
 
     }
