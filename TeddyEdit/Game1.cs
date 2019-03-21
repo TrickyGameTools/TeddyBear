@@ -89,20 +89,20 @@ namespace TeddyEdit
 #if DEBUG
             if (false) { } // just some crap as things are different while debugging.
 #else
-            if (ProjectData.args.Length < 2)
+            if (ProjectData.args.Length < 3)
                 Crash.Error(this,"No arguments given!\nUsage: TeddyEdit <project> <map>\n \n If you are not sure how to use this tool, use the launcher in stead!");
 #endif
             else {
 #if DEBUG
                 ProjectData.Project = "Test";
 #else
-                ProjectData.Project = ProjectData.args[0];
+                ProjectData.Project = ProjectData.args[1];
 #endif
-                if (!ProjectData.AllWell) { Crash.Error(this, "Project loading failed!"); } else {
+                if (!ProjectData.AllWell) { Crash.Error(this, $"Project loading failed! {ProjectData.Project}"); } else {
 #if DEBUG
                     ProjectData.MapFile = "Test Map";
 #else
-                    ProjectData.MapFile = ProjectData.args[1];
+                    ProjectData.MapFile = ProjectData.args[2];
 #endif
                 }
             }
