@@ -8,12 +8,20 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TeddyEdit.Stages
 {
-    class TextureLoad : BasisStage
-    {
+    class TextureLoad : BasisStage {
         static TextureLoad me = new TextureLoad();
+        List<string> FormatAllowed = new List<string>();
 
-        public override void Draw(Game1 game, GameTime gameTime)
-        {
+        TextureLoad() {
+            FormatAllowed.Add("PNG");
+            foreach(string f in ProjectData.ProjectConfig.List("ImageExtAllowed")) {
+                FormatAllowed.Add(f.ToUpper());
+            }
+        }
+
+        bool AllowFormat(string ext) => FormatAllowed.Contains(ext.ToUpper());
+
+        public override void Draw(Game1 game, GameTime gameTime) {
             
         }
 

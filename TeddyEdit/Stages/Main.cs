@@ -35,8 +35,7 @@ using TrickyUnits;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace TeddyEdit.Stages
-{
+namespace TeddyEdit.Stages {
     class Main : BasisStage {
         MouseState MS;
         public override void Update(Game1 game, GameTime gameTime, MouseState mouse, GamePadState gamepad, KeyboardState kb) {
