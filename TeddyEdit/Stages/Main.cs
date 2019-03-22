@@ -48,5 +48,6 @@ namespace TeddyEdit.Stages
         }
 
         readonly public static Main Me = new Main();
+        public static void ComeToMe() => ProjectData.Game.SetStage(Me);
     }
 }
