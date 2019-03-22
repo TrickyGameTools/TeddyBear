@@ -71,8 +71,9 @@ namespace TeddyEdit
             ProjectData.SetGame(this);
 
             // ScreenSize
-            graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
-            graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+            //graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+            //graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+            graphics.HardwareModeSwitch = false;
             graphics.IsFullScreen = true;
             graphics.ApplyChanges();
 
