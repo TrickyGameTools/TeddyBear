@@ -24,24 +24,58 @@
 // Version: 19.03.22
 // EndLic
 
-Ã¯Â»Â¿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using UseJCR6;
+using TrickyUnits;
 
 namespace TeddyEdit.Stages
 {
     class TextureLoad : BasisStage {
+
+        class TL_Item {
+            public string filename;
+            public int y;       
+            
+            public TL_Item(string af,int ay) { filename = af; y = ay; }
+        }
+
         static TextureLoad me = new TextureLoad();
         List<string> FormatAllowed = new List<string>();
+        List<TL_Item> Texes = new List<TL_Item>();
 
         TextureLoad() {
             FormatAllowed.Add("PNG");
-            foreach(string f in ProjectData.ProjectConfig.List("ImageExtAllowed")) {
+            foreach (string f in ProjectData.ProjectConfig.List("ImageExtAllowed")) {
                 FormatAllowed.Add(f.ToUpper());
+            }
+
+
+            bool TexesContains(string e) {
+                var ec = e.ToUpper();
+                foreach (TL_Item it in Texes)
+                    if (it.filename.ToUpper() == ec)
+                        return true;
+                return false;
+            }
+
+            foreach (TJCREntry ent in ProjectData.texJCR.Entries.Values) {
+                var fn = ent.Entry;
+                var e = qstr.ExtractExt(fn);
+                var sqn = fn.Split('/');
+                var bundle = false;
+                foreach (string folder in sqn) bundle = bundle || qstr.ExtractExt(folder).ToUpper() == "JPBF";
+                if (bundle) {
+                    var dir = qstr.ExtractDir(fn);
+                    if (!TexesContains(dir)) Texes.Add(new TL_Item(dir, Texes.Count * 20));
+                } else {
+                    Texes.Add(new TL_Item(fn, Texes.Count * 20));
+                }
             }
         }
 
