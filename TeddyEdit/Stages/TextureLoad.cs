@@ -40,16 +40,25 @@ namespace TeddyEdit.Stages
 
         class TL_Item {
             public string filename;
-            public int y;       
-            
-            public TL_Item(string af,int ay) { filename = af; y = ay; }
+            public int y;
+            public TQMGText dt;
+            public TL_Item(string af,int ay) { filename = af; y = ay; dt = UI.font20.Text(filename); }
+            public bool high {
+                get {
+                    var ty = y - scrollY;
+                    return ms.Y >= ty && ms.Y <= ty + 20 && ms.X < ProjectData.Game.Window.ClientBounds.Width - 100;
+                }
+            }
         }
 
-        static TextureLoad me = new TextureLoad();
-        List<string> FormatAllowed = new List<string>();
-        List<TL_Item> Texes = new List<TL_Item>();
+        static TextureLoad me = null;
+        static List<string> FormatAllowed = new List<string>();
+        static List<TL_Item> Texes = new List<TL_Item>();
+        static int scrollY = 0;
+        static int texSpot = 0;
+        static MouseState ms;
 
-        TextureLoad() {
+        void Init() {            
             FormatAllowed.Add("PNG");
             foreach (string f in ProjectData.ProjectConfig.List("ImageExtAllowed")) {
                 FormatAllowed.Add(f.ToUpper());
@@ -75,23 +84,36 @@ namespace TeddyEdit.Stages
                     if (!TexesContains(dir)) Texes.Add(new TL_Item(dir, Texes.Count * 20));
                 } else {
                     Texes.Add(new TL_Item(fn, Texes.Count * 20));
-                }
+                }                
             }
         }
 
         bool AllowFormat(string ext) => FormatAllowed.Contains(ext.ToUpper());
 
         public override void Draw(Game1 game, GameTime gameTime) {
-            
+            // list
+            foreach(TL_Item item in Texes) {
+                if (item.high)
+                    TQMG.Color(255, 180, 0);
+                else
+                    TQMG.Color(255, 255, 255);
+                item.dt.Draw(20, item.y - scrollY);
+            }
+            // tools
         }
 
-        public override void Update(Game1 game, GameTime gameTime, MouseState mouse, GamePadState gamepad, KeyboardState kb)
-        {
-            
+        public override void Update(Game1 game, GameTime gameTime, MouseState mouse, GamePadState gamepad, KeyboardState kb) {
+            ms = mouse;
         }
 
-        public static void ComeToMe()
+        public static void ComeToMe(int texspot)
         {
+            if (me == null) {
+                me = new TextureLoad();
+                me.Init();
+            }
+            scrollY = 0;
+            texSpot = texspot;
             ProjectData.Game.SetStage(me);
         }
 
