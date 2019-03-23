@@ -92,7 +92,8 @@ namespace TeddyEdit
                 if (_map != "") throw new Exception("Map overdefinition");
                 _map = value;
                 texJCR = new TJCRDIR();
-                foreach (string patch in ProjectConfig.List("Textures")) texJCR.PatchFile(patch);
+                foreach (string patch in ProjectConfig.List("Textures")) texJCR.PatchFile(Dirry.AD(patch));
+                if (JCR6.JERROR != "") Log($"{(char)27}[31mJCR6 ERROR: {(char)27}[0m{JCR6.JERROR}");
                 if (!File.Exists(_map)) {
                     Map = TeddyMap.Create(MapWidth, MapHeight, MapGridX, MapGridY, MapLayers, texJCR);
                 } else {
@@ -134,6 +135,7 @@ namespace TeddyEdit
 
         public static void InitJCRDrivers() {
             JCR6_lzma.Init();
+            new JCR6_RealDir();
         }
 
         public static void Log(string message) {
