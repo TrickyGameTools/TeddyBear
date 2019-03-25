@@ -55,6 +55,7 @@ namespace TeddyEdit.Stages
         static List<string> FormatAllowed = new List<string>();
         static List<TL_Item> Texes = new List<TL_Item>();
         static int scrollY = 0;
+        static int maxScrollY = 0;
         static int texSpot = 0;
         static MouseState ms;
 
@@ -84,6 +85,7 @@ namespace TeddyEdit.Stages
                     if (!TexesContains(dir)) Texes.Add(new TL_Item(dir, Texes.Count * 20));
                 } else {
                     Texes.Add(new TL_Item(fn, Texes.Count * 20));
+                    maxScrollY = Texes.Count * 20;
                 }                
             }
         }
@@ -91,7 +93,7 @@ namespace TeddyEdit.Stages
         bool AllowFormat(string ext) => FormatAllowed.Contains(ext.ToUpper());
 
         public override void Draw(Game1 game, GameTime gameTime) {
-            // list
+            #region draw list itself
             foreach(TL_Item item in Texes) {
                 if (item.high)
                     TQMG.Color(255, 180, 0);
@@ -99,11 +101,33 @@ namespace TeddyEdit.Stages
                     TQMG.Color(255, 255, 255);
                 item.dt.Draw(20, item.y - scrollY);
             }
-            // tools
+            #endregion
+            #region Draw scroll arrow
+            #region up
+            if (ms.X > ProjectData.Game.Window.ClientBounds.Width - 32 && ms.Y < 32)
+                TQMG.Color(180, 0, 255);
+            else
+                TQMG.Color(0,180, 255);
+            UI.ArrowUp.Draw(ProjectData.Game.Window.ClientBounds.Width - 32, 0);
+            #endregion
+            #region Down
+            if (ms.X > ProjectData.Game.Window.ClientBounds.Width - 32 && ms.Y > ProjectData.Game.Window.ClientBounds.Height - 32)
+                TQMG.Color(180, 0, 255);
+            else
+                TQMG.Color(0, 180, 255);
+            UI.ArrowDn.Draw(ProjectData.Game.Window.ClientBounds.Width - 32, ProjectData.Game.Window.ClientBounds.Height - 32);
+            #endregion
+            #endregion
         }
 
         public override void Update(Game1 game, GameTime gameTime, MouseState mouse, GamePadState gamepad, KeyboardState kb) {
             ms = mouse;
+            if (ms.LeftButton==ButtonState.Pressed && ms.X > ProjectData.Game.Window.ClientBounds.Width - 32) {
+                if (scrollY > 0 && ms.Y < 32) scrollY -= 6;
+                else if (scrollY < ProjectData.Game.Window.ClientBounds.Width - 32 && scrollY < maxScrollY - 50) scrollY += 6;
+                if (scrollY < 0) scrollY = 0;
+                if (scrollY > maxScrollY) scrollY = maxScrollY;
+            }
         }
 
         public static void ComeToMe(int texspot)

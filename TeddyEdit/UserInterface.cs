@@ -71,6 +71,10 @@ namespace TeddyEdit {
         static public Game1 Game { get; private set; }
         static public TQMGImage back { get; private set; }
         static TQMGText ProjectAndFile;
+        static public TQMGImage ArrowUp { get; private set; }
+        static public TQMGImage ArrowDn { get; private set; }
+        static public TQMGImage ArrowDown => ArrowDn;
+
 
         static bool MenuOpen = false;
 
@@ -87,6 +91,8 @@ namespace TeddyEdit {
             foreach (PDMEN i in PDM_Bar.Keys) PDM_Caption[i] = font20.Text(PDM_Bar[i]);
             back = TQMG.GetImage("metal.jpg");
             ProjectAndFile = font20.Text($"Project: {ProjectData.Project}; Map: {ProjectData.MapFile}");
+            ArrowUp = TQMG.GetImage("Arrow_Up.png");
+            ArrowDn = TQMG.GetImage("Arrow_Down.png");
         }
 
         static public void DrawPDMenu()  {
