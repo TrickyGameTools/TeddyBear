@@ -62,7 +62,30 @@ namespace TeddyEdit {
         }
     }
 
+    
     static class UI {
+
+        #region Classes and void pointers (delegates) for the tool box
+        delegate void ToolMouse(MouseState ms);
+        delegate void ToolDraw();
+
+        class ToolKind {
+            readonly public TQMGImage Icon;
+            public bool selected = false;
+            readonly public int x;
+            string Name;
+            readonly public ToolDraw Draw;
+            readonly public ToolMouse Mouse;
+            public ToolKind(int getx, string getname, ToolDraw getdraw, ToolMouse getmouse) {
+                selected = getx == 0;
+                x = getx;
+                Name = getname;
+                Draw = getdraw;
+                Mouse = getmouse;
+                // TODO: Load the icon
+            }
+        }
+        #endregion
 
         static SortedDictionary<PDMEN, string> PDM_Bar = new SortedDictionary<PDMEN, string>();
         static SortedDictionary<PDMEN, TQMGText> PDM_Caption = new SortedDictionary<PDMEN, TQMGText>();
@@ -78,10 +101,14 @@ namespace TeddyEdit {
         static public int ScrWidth => ProjectData.Game.Window.ClientBounds.Width;
         static public int ScrHeight => ProjectData.Game.Window.ClientBounds.Height;
 
+        static Dictionary<bool, TQMGImage> ToolButton = new Dictionary<bool, TQMGImage>();
 
         static bool MenuOpen = false;
 
+        static List<ToolKind> Tools = new List<ToolKind>();
+
         static UI() {
+            
             MKL.Version("TeddyBear - UserInterface.cs","19.03.20");
             MKL.Lic    ("TeddyBear - UserInterface.cs","GNU General Public License 3");
             PDM_Bar[PDMEN.File] = "File";
@@ -96,6 +123,18 @@ namespace TeddyEdit {
             ProjectAndFile = font20.Text($"Project: {ProjectData.Project}; Map: {ProjectData.MapFile}");
             ArrowUp = TQMG.GetImage("Arrow_Up.png");
             ArrowDn = TQMG.GetImage("Arrow_Down.png");
+
+            #region Create the tools
+            void NewTool(string name,ToolDraw draw, ToolMouse mouse) {
+                Tools.Add( new ToolKind(Tools.Count*65,name,draw,mouse) );                
+            }
+            NewTool("Layers",delegate { },delegate { });
+            NewTool("Objects", delegate { }, delegate { });
+            NewTool("Zones", delegate { }, delegate { });
+            NewTool("Script", delegate { }, delegate { }); // TODO: Script
+            ToolButton[false] = TQMG.GetImage("toolbutton_0.png");
+            ToolButton[true] = TQMG.GetImage("toolbutton_1.png");
+            #endregion
         }
 
         static public void DrawPDMenu()  {
@@ -114,6 +153,9 @@ namespace TeddyEdit {
             var ToolX = ScrWidth - ToolWidth;
             TQMG.UglyTile(back,ToolX, back.Height, ToolWidth, ScrHeight);
             //font20.DrawText($"{ToolX}/{back.Width}x{back.Height}/{ToolWidth}/{ScrWidth}x{ScrHeight}/{ScrMod}",ToolX,100,TQMG_TextAlign.Right); // debug line!
+            foreach(ToolKind tool in Tools) {
+                ToolButton[tool.selected].Draw(ToolX + tool.x, 50);
+            }
         }
 
         static public void DrawStatusBar(MouseState ms) {
