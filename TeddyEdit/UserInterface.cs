@@ -75,6 +75,9 @@ namespace TeddyEdit {
         static public TQMGImage ArrowDn { get; private set; }
         static public TQMGImage ArrowDown => ArrowDn;
 
+        static public int ScrWidth => ProjectData.Game.Window.ClientBounds.Width;
+        static public int ScrHeight => ProjectData.Game.Window.ClientBounds.Height;
+
 
         static bool MenuOpen = false;
 
@@ -105,6 +108,14 @@ namespace TeddyEdit {
 
         }
 
+        static public void DrawToolBox() {
+            var ScrMod = ScrWidth % back.Width;
+            var ToolWidth = back.Width + ScrMod;
+            var ToolX = ScrWidth - ToolWidth;
+            TQMG.UglyTile(back,ToolX, back.Height, ToolWidth, ScrHeight);
+            //font20.DrawText($"{ToolX}/{back.Width}x{back.Height}/{ToolWidth}/{ScrWidth}x{ScrHeight}/{ScrMod}",ToolX,100,TQMG_TextAlign.Right); // debug line!
+        }
+
         static public void DrawStatusBar(MouseState ms) {
             TQMG.UglyTile(back, 0, ProjectData.Game.Window.ClientBounds.Height - 25, ProjectData.Game.Window.ClientBounds.Width, 25);
             if (ms.Y>10 && (!MenuOpen)) {
@@ -115,7 +126,7 @@ namespace TeddyEdit {
 
         static public void DrawScreen(MouseState ms) {
             //DrawMap();
-            // DrawToolBox();
+            DrawToolBox(); // Toolbos MUST come BEFORE pull down menu and status bar (conflict prevention)
             DrawPDMenu();
             DrawStatusBar(ms);
         }
