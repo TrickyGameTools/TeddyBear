@@ -41,6 +41,7 @@ using System.Text;
 using UseJCR6;
 using TrickyUnits;
 using Microsoft.Xna.Framework.Input;
+using TeddyEdit.Stages;
 #endregion
 
 namespace TeddyEdit {
@@ -69,7 +70,7 @@ namespace TeddyEdit {
 
         #region Classes and void pointers (delegates) for the tool box
         delegate void ToolMouse(MouseState ms);
-        delegate void ToolDraw();
+        delegate void ToolDraw(MouseState ms);
 
         class ToolKind {
             TQMGImage _icon=null;
@@ -99,6 +100,7 @@ namespace TeddyEdit {
         static SortedDictionary<PDMEN, string> PDM_Bar = new SortedDictionary<PDMEN, string>();
         static SortedDictionary<PDMEN, TQMGText> PDM_Caption = new SortedDictionary<PDMEN, TQMGText>();
         static public TQMGFont font20 { get; private set; }
+        static public TQMGFont font32 { get; private set; }
         static public TJCRDIR JCR { get; private set; }
         static public Game1 Game { get; private set; }
         static public TQMGImage back { get; private set; }
@@ -106,6 +108,7 @@ namespace TeddyEdit {
         static public TQMGImage ArrowUp { get; private set; }
         static public TQMGImage ArrowDn { get; private set; }
         static public TQMGImage ArrowDown => ArrowDn;
+        static int TexSpot { get => Main.CurTexSpot; set { Main.CurTexSpot = value; } }
 
         static public int ScrWidth => ProjectData.Game.Window.ClientBounds.Width;
         static public int ScrHeight => ProjectData.Game.Window.ClientBounds.Height;
@@ -129,6 +132,7 @@ namespace TeddyEdit {
             PDM_Bar[PDMEN.Script] = "Script"
 #endif
             font20 = TQMG.GetFont("fonts/SulphurPoint-Regular.20.jfbf");
+            font32 = TQMG.GetFont("fonts/SulphurPoint-Regular.32.jfbf");
             foreach (PDMEN i in PDM_Bar.Keys) PDM_Caption[i] = font20.Text(PDM_Bar[i]);
             back = TQMG.GetImage("metal.jpg");
             ProjectAndFile = font20.Text($"Project: {ProjectData.Project}; Map: {ProjectData.MapFile}");
@@ -139,7 +143,7 @@ namespace TeddyEdit {
             void NewTool(string name,ToolDraw draw, ToolMouse mouse) {
                 Tools.Add( new ToolKind(Tools.Count*65,name,draw,mouse) );                
             }
-            NewTool("Layers",delegate { font20.DrawText("Layers not yet implemented", ToolX, 200); },delegate { });
+            NewTool("Layers", Tool_Layers, Tool_LayersUpdate);
             NewTool("Objects", delegate { font20.DrawText("Objects not yet implemented", ToolX, 200); }, delegate { });
             NewTool("Zones", delegate { font20.DrawText("Zones not yet implemented", ToolX, 200); }, delegate { });
             NewTool("Script", delegate { font20.DrawText("Script not yet implemented", ToolX, 200); }, delegate { }); // TODO: Script
@@ -148,8 +152,29 @@ namespace TeddyEdit {
             #endregion
         }
 
+        static bool ArrowWasPressed = false;
+        static void Tool_Layers(MouseState mouse) {
+            TQMG.Color(0, 180, 255);
+            if (mouse.X > ToolX && mouse.X < ToolX + 32 && mouse.Y > 150 && mouse.Y < 182) TQMG.Color(180, 0, 255);
+            ArrowUp.Draw(ToolX, 150);
+            TQMG.Color(0, 180, 255);
+            if (mouse.X > ToolX+40 && mouse.X < ToolX + 72 && mouse.Y > 150 && mouse.Y < 182) TQMG.Color(180, 0, 255);
+            ArrowDn.Draw(ToolX + 40, 150);
+            TQMG.Color(255, 180, 0);
+            font32.DrawText(TexSpot.ToString("X2"),ToolX + 80, 150);
+        }
+
+        static void Tool_LayersUpdate(MouseState mouse)  {
+            if (mouse.Y > 150 && mouse.Y < 182 && !ArrowWasPressed && mouse.LeftButton == ButtonState.Pressed) {
+                if (mouse.X > ToolX && mouse.X < ToolX + 32 && TexSpot > 0) TexSpot--;
+                if (mouse.X > ToolX+40 && mouse.X < ToolX + 72 && TexSpot < 255) TexSpot++;
+            }
+            ArrowWasPressed = mouse.LeftButton == ButtonState.Pressed;
+        }
+
         static public void DrawPDMenu()  {
             int x = 10;
+            TQMG.Color(255, 255, 255);
             TQMG.UglyTile(back, 0, 0, ProjectData.Game.Window.ClientBounds.Width, 15);
             foreach(PDMEN i in PDM_Caption.Keys) {
                 PDM_Caption[i].Draw(x, 5);
@@ -161,6 +186,7 @@ namespace TeddyEdit {
         static public void DrawToolBox(MouseState mouse) {
             var ScrMod = ScrWidth % back.Width;
             var ToolWidth = back.Width + ScrMod;
+            TQMG.Color(255, 255, 255);
             ToolX = ScrWidth - ToolWidth;
             TQMG.UglyTile(back,ToolX, back.Height, ToolWidth, ScrHeight);
             //font20.DrawText($"{ToolX}/{back.Width}x{back.Height}/{ToolWidth}/{ScrWidth}x{ScrHeight}/{ScrMod}",ToolX,100,TQMG_TextAlign.Right); // debug line!
@@ -176,7 +202,7 @@ namespace TeddyEdit {
                 }
                 #endregion
             }
-            CurrentTool.Draw();
+            CurrentTool.Draw(mouse);
         }
 
         static public void DrawStatusBar(MouseState ms) {
@@ -192,6 +218,10 @@ namespace TeddyEdit {
             DrawToolBox(ms); // Toolbos MUST come BEFORE pull down menu and status bar (conflict prevention)
             DrawPDMenu();
             DrawStatusBar(ms);
+        }
+
+        static public void UpdateScreen(MouseState ms) {
+            CurrentTool.Mouse(ms);
         }
 
     }

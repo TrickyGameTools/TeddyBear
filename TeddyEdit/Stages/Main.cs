@@ -40,13 +40,14 @@ using Microsoft.Xna.Framework.Input;
 namespace TeddyEdit.Stages {
     class Main : BasisStage {
         MouseState MS;
-        int CurTexSpot = 1;
+        static public int CurTexSpot = 1;
         public override void Update(Game1 game, GameTime gameTime, MouseState mouse, GamePadState gamepad, KeyboardState kb) {
             MS = mouse;            
             if (kb.IsKeyDown(Keys.LeftControl)) {
                 if (kb.IsKeyDown(Keys.T) && CurTexSpot > 0)
                     TextureLoad.ComeToMe(CurTexSpot);
             }
+            UI.UpdateScreen(mouse); // for buttons on the interface
         }
 
         public override void Draw(Game1 game, GameTime gameTime) {
