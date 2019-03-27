@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.03.26
+// Version: 19.03.27
 // EndLic
+
 
 
 
@@ -71,7 +72,13 @@ namespace TeddyEdit {
         delegate void ToolDraw();
 
         class ToolKind {
-            readonly public TQMGImage Icon;
+            TQMGImage _icon=null;
+            public TQMGImage Icon { get {
+                    if (_icon==null) _icon = TQMG.GetImage($"Tool_{Name}.png");
+                    if (_icon == null) throw new Exception($"UI.GetIcon(\"{Name}\"): {JCR6.JERROR}");
+                    return _icon;
+                }
+            }
             public bool selected = false;
             readonly public int x;
             string Name;
@@ -79,10 +86,11 @@ namespace TeddyEdit {
             readonly public ToolMouse Mouse;
             public ToolKind(int getx, string getname, ToolDraw getdraw, ToolMouse getmouse) {
                 selected = getx == 0;
+                if (selected) CurrentTool = this;
                 x = getx;
                 Name = getname;
                 Draw = getdraw;
-                Mouse = getmouse;
+                Mouse = getmouse;                
                 // TODO: Load the icon
             }
         }
@@ -107,10 +115,12 @@ namespace TeddyEdit {
         static bool MenuOpen = false;
 
         static List<ToolKind> Tools = new List<ToolKind>();
+        static ToolKind CurrentTool;
+        static int ToolX = 0;
 
         static UI() {
             
-            MKL.Version("TeddyBear - UserInterface.cs","19.03.26");
+            MKL.Version("TeddyBear - UserInterface.cs","19.03.27");
             MKL.Lic    ("TeddyBear - UserInterface.cs","GNU General Public License 3");
             PDM_Bar[PDMEN.File] = "File";
             PDM_Bar[PDMEN.Textures] = "Textures";
@@ -129,10 +139,10 @@ namespace TeddyEdit {
             void NewTool(string name,ToolDraw draw, ToolMouse mouse) {
                 Tools.Add( new ToolKind(Tools.Count*65,name,draw,mouse) );                
             }
-            NewTool("Layers",delegate { },delegate { });
-            NewTool("Objects", delegate { }, delegate { });
-            NewTool("Zones", delegate { }, delegate { });
-            NewTool("Script", delegate { }, delegate { }); // TODO: Script
+            NewTool("Layers",delegate { font20.DrawText("Layers not yet implemented", ToolX, 200); },delegate { });
+            NewTool("Objects", delegate { font20.DrawText("Objects not yet implemented", ToolX, 200); }, delegate { });
+            NewTool("Zones", delegate { font20.DrawText("Zones not yet implemented", ToolX, 200); }, delegate { });
+            NewTool("Script", delegate { font20.DrawText("Script not yet implemented", ToolX, 200); }, delegate { }); // TODO: Script
             ToolButton[false] = TQMG.GetImage("toolbutton_0.png");
             ToolButton[true] = TQMG.GetImage("toolbutton_1.png");
             #endregion
@@ -148,15 +158,25 @@ namespace TeddyEdit {
 
         }
 
-        static public void DrawToolBox() {
+        static public void DrawToolBox(MouseState mouse) {
             var ScrMod = ScrWidth % back.Width;
             var ToolWidth = back.Width + ScrMod;
-            var ToolX = ScrWidth - ToolWidth;
+            ToolX = ScrWidth - ToolWidth;
             TQMG.UglyTile(back,ToolX, back.Height, ToolWidth, ScrHeight);
             //font20.DrawText($"{ToolX}/{back.Width}x{back.Height}/{ToolWidth}/{ScrWidth}x{ScrHeight}/{ScrMod}",ToolX,100,TQMG_TextAlign.Right); // debug line!
             foreach(ToolKind tool in Tools) {
+                tool.Icon.Draw(ToolX + tool.x, 50);
                 ToolButton[tool.selected].Draw(ToolX + tool.x, 50);
+                #region Dirty code straight from Hell, but I don't care!
+                if (mouse.X>tool.x+ToolX && mouse.Y>50 && mouse.Y < 114 && mouse.LeftButton==ButtonState.Pressed) {
+                    foreach(ToolKind ModToolTab in Tools) {
+                        ModToolTab.selected = ModToolTab == tool; // Yeah, this must have the same reference!!!
+                        if (ModToolTab.selected) CurrentTool = ModToolTab;
+                    }
+                }
+                #endregion
             }
+            CurrentTool.Draw();
         }
 
         static public void DrawStatusBar(MouseState ms) {
@@ -169,7 +189,7 @@ namespace TeddyEdit {
 
         static public void DrawScreen(MouseState ms) {
             //DrawMap();
-            DrawToolBox(); // Toolbos MUST come BEFORE pull down menu and status bar (conflict prevention)
+            DrawToolBox(ms); // Toolbos MUST come BEFORE pull down menu and status bar (conflict prevention)
             DrawPDMenu();
             DrawStatusBar(ms);
         }
