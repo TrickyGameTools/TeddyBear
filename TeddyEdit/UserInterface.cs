@@ -120,6 +120,7 @@ namespace TeddyEdit {
         static List<ToolKind> Tools = new List<ToolKind>();
         static ToolKind CurrentTool;
         static int ToolX = 0;
+        static TQMGText TxNULL;
 
         static UI() {
             
@@ -133,6 +134,7 @@ namespace TeddyEdit {
 #endif
             font20 = TQMG.GetFont("fonts/SulphurPoint-Regular.20.jfbf");
             font32 = TQMG.GetFont("fonts/SulphurPoint-Regular.32.jfbf");
+            TxNULL = font32.Text("<NULL>");
             foreach (PDMEN i in PDM_Bar.Keys) PDM_Caption[i] = font20.Text(PDM_Bar[i]);
             back = TQMG.GetImage("metal.jpg");
             ProjectAndFile = font20.Text($"Project: {ProjectData.Project}; Map: {ProjectData.MapFile}");
@@ -162,6 +164,13 @@ namespace TeddyEdit {
             ArrowDn.Draw(ToolX + 40, 150);
             TQMG.Color(255, 180, 0);
             font32.DrawText(TexSpot.ToString("X2"),ToolX + 80, 150);
+            if (TexSpot == 0) {
+                TQMG.Color(255, 0, 0);
+                TxNULL.Draw(ToolX + 200, 150);
+            } else {
+                TQMG.Color(180, 255, 0);
+
+            }
         }
 
         static void Tool_LayersUpdate(MouseState mouse)  {
