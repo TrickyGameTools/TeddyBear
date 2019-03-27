@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.03.26
+// Version: 19.03.27
 // EndLic
+
 
 
 using System;
@@ -128,6 +129,15 @@ namespace TeddyEdit.Stages
                 else if (scrollY < ProjectData.Game.Window.ClientBounds.Width - 32 && scrollY < maxScrollY - 50) scrollY += 6;
                 if (scrollY < 0) scrollY = 0;
                 if (scrollY > maxScrollY) scrollY = maxScrollY;
+            } else {
+                if (ms.LeftButton == ButtonState.Pressed) {
+                    foreach (TL_Item item in Texes) {
+                        if (item.high) {
+                            ProjectData.Map.Texture[texSpot] = item.filename;
+                            Main.ComeToMe();
+                        }
+                    }
+                }
             }
         }
 

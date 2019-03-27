@@ -32,13 +32,14 @@
 
 
 
+
 #undef supportscript
 
 #region Use this!
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using TeddyBear;
 using UseJCR6;
 using TrickyUnits;
 using Microsoft.Xna.Framework.Input;
@@ -100,6 +101,7 @@ namespace TeddyEdit {
 
         static SortedDictionary<PDMEN, string> PDM_Bar = new SortedDictionary<PDMEN, string>();
         static SortedDictionary<PDMEN, TQMGText> PDM_Caption = new SortedDictionary<PDMEN, TQMGText>();
+        static public TQMGFont font12 { get; private set; }
         static public TQMGFont font20 { get; private set; }
         static public TQMGFont font32 { get; private set; }
         static public TJCRDIR JCR { get; private set; }
@@ -122,6 +124,7 @@ namespace TeddyEdit {
         static ToolKind CurrentTool;
         static int ToolX = 0;
         static TQMGText TxNULL;
+        static TeddyMap Map => ProjectData.Map;
 
         static UI() {
             
@@ -133,6 +136,7 @@ namespace TeddyEdit {
 #if supportscript
             PDM_Bar[PDMEN.Script] = "Script"
 #endif
+            font12 = TQMG.GetFont("fonts/SulphurPoint-Regular.12.jfbf");
             font20 = TQMG.GetFont("fonts/SulphurPoint-Regular.20.jfbf");
             font32 = TQMG.GetFont("fonts/SulphurPoint-Regular.32.jfbf");
             TxNULL = font32.Text("<NULL>");
@@ -170,7 +174,27 @@ namespace TeddyEdit {
                 TxNULL.Draw(ToolX + 200, 150);
             } else {
                 TQMG.Color(180, 255, 0);
-
+                var texfil = Map.Texture[TexSpot];
+                if (texfil == null) texfil = "";
+                var texdirs = texfil.Split('/');
+                if (texdirs.Length>7) {
+                    var y = (172 + 16) - (12 * 7);
+                    for (int i=0;i<texdirs.Length;i++) {
+                        if (i < 3 || i < texdirs.Length - 4) {
+                            font12.DrawText(texdirs[i],ToolX+110,y);
+                            y += 12;
+                        } else if (i == 3) {
+                            font12.DrawText("   <=====> ", ToolX + 110, y);
+                            y += 12;
+                        }
+                    }
+                } else {
+                    var y = (172 + 16) - (12 * texdirs.Length);
+                    for (int i = 0; i < texdirs.Length; i++) {
+                        font12.DrawText(texdirs[i], ToolX + 110, y);
+                        y += 12;
+                    }
+                }
             }
         }
 
