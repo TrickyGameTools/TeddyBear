@@ -1,7 +1,7 @@
 // Lic:
 // TeddyClass/TeddySave.cs
 // TeddyBear C#
-// version: 19.03.16
+// version: 19.03.27
 // Copyright (C)  Jeroen P. Broks
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -17,6 +17,7 @@
 // misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 // EndLic
+
 
 
 
@@ -43,8 +44,22 @@ namespace TeddyBear {
         static void Init() {
             Core.Init();
             MKL.Lic    ("TeddyBear - TeddySave.cs","ZLib License");
-            MKL.Version("TeddyBear - TeddySave.cs","19.03.16");
+            MKL.Version("TeddyBear - TeddySave.cs","19.03.27");
         }
+
+        public delegate void DLog(string message);
+        static DLog Log = delegate { };
+
+
+        /// <summary>
+
+        /// Can be used to attach your own log function. Debugging can be easier this way.
+
+        /// </summary>
+
+        /// <param name="L"></param>
+        public static void SetLog(DLog L) { Log = L; }
+
 
         /// <summary>
         /// Saves the TeddyBear map inside a JCR6 resouce currently in creation. Returns "Ok" if succesful and otherwise an error message.
@@ -53,7 +68,7 @@ namespace TeddyBear {
         /// <param name="jcr"></param>
         /// <param name="Entry"></param>
         /// <param name="Storage"></param>
-        static string Save(TeddyMap map,TJCRCreate jcr, string EntryPref, string Storage = "Store") {
+        public static string Save(TeddyMap map,TJCRCreate jcr, string EntryPref, string Storage = "Store") {
             try {
                 Init();
                 //Local MP$ = Replace(MapFile, "\"," / ")
@@ -66,20 +81,27 @@ namespace TeddyBear {
                 //'If Right(MP,1)<>"/" MP:+"/"
                 //'If Not CreateDir(MP,1) Return "Required path could not be created!"
                 // BT = JCR_Create(MapFile)
+                Log("Gonna save a Teddy Bear map");
                 if (BT == null) return "Save file could not be created or null sent to saveJCR request!";
                 // DEFS
-                BTE = BT.NewEntry($"{EntryPref}Defs");
+                Log("Saving Defs");
+                BTE = BT.NewEntry($"{EntryPref}Defs",Storage);
+                if (BTE == null) return $"Entry creation failed: {JCR6.JERROR}";
                 BTE.WriteByte(0); BTE.WriteInt(map.GridX); BTE.WriteInt(map.GridY);
                 BTE.WriteByte(1); if (map.TexResize) BTE.WriteByte(1); else BTE.WriteByte(0);
                 BTE.WriteByte(2); BTE.WriteInt(map.SizeX); BTE.WriteInt(map.SizeY);
-                for (byte Ak = 0; Ak <= 255; ++Ak) {
-                    if (map.Texture[Ak] != "") {
+                Log("\tWriting Textures");
+                for (byte Ak = 255; Ak > 0; Ak--) {
+                    Log($"\tWriting texture {Ak}");
+                    if (map.Texture[Ak]!=null && map.Texture[Ak] != "") {
                         BTE.WriteByte(3);
                         BTE.WriteByte(Ak);
                         BTE.WriteString(map.Texture[Ak]);
                     }
                 }
+                Log("\tWriting Layers");
                 foreach (string K in map.Layers.Keys) {
+                    Log($"\tWriting Layer: {K}");
                     BTE.WriteByte(4);
                     BTE.WriteString(K);
                     if (qstr.Left(K, 5) == "Zone_") {
@@ -92,7 +114,9 @@ namespace TeddyBear {
                 }
                 BTE.Close();
                 // Layers
+                Log("Saving Layers");
                 foreach (string K in map.Layers.Keys) {
+                    Log($"Saving Layer {K}");
                     var Prefix = "Layer_";
                     var lay = map.Layers[K];
                     if (qstr.Left(K, 5) == "Zone_") Prefix = "";
@@ -121,6 +145,7 @@ namespace TeddyBear {
                     BTE.Close();
                 }
                 // Objects
+                Log("Saving Objects");
                 BTE = BT.NewEntry($"{EntryPref}Objects", Storage);
                 BTE.WriteInt(map.OWidth);
                 BTE.WriteInt(map.OHeight);
@@ -142,9 +167,12 @@ namespace TeddyBear {
                         }
                 BTE.Close();
                 // General Data
+                Log("Saving General Data");
                 BT.NewStringMap(map.MetaData, $"{EntryPref}Data", Storage);
                 // All done
+                Log("Closing");
                 BT.Close();
+                Log("Map saved");
                 return "Ok";
             } catch (System.Exception err) {
                 return $"System Error: {err.Message}";
@@ -159,7 +187,7 @@ namespace TeddyBear {
         /// <param name="Entry"></param>
         /// <param name="Storage"></param>
         /// <param name="FileTableStorage"></param>
-        static string Save(TeddyMap map,string filename, string EntryPref="", string Storage="Store", string FileTableStorage= "Store"){
+        static public string Save(TeddyMap map,string filename, string EntryPref="", string Storage="Store", string FileTableStorage= "Store"){
             var bt = new TJCRCreate(filename, FileTableStorage);
             var r = Save(map, bt, EntryPref, Storage);
             bt.Close();

@@ -27,6 +27,7 @@
 
 
 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,11 +43,21 @@ namespace TeddyEdit.Stages {
     class Main : BasisStage {
         MouseState MS;
         static public int CurTexSpot = 1;
+
+        void SaveMap() {
+            UI.ErrorNotice = "";
+            ProjectData.Log($"Compresion = {ProjectData.MapCompression}");
+            var r = TeddySave.Save(ProjectData.Map, ProjectData.MapFile, "", ProjectData.MapCompression,ProjectData.MapCompression);
+            if (r != "" && r != "Ok") UI.ErrorNotice = r;
+
+        }
+
         public override void Update(Game1 game, GameTime gameTime, MouseState mouse, GamePadState gamepad, KeyboardState kb) {
             MS = mouse;            
             if (kb.IsKeyDown(Keys.LeftControl)) {
                 if (kb.IsKeyDown(Keys.T) && CurTexSpot > 0)
                     TextureLoad.ComeToMe(CurTexSpot);
+                if (kb.IsKeyDown(Keys.S)) SaveMap();
             }
             UI.UpdateScreen(mouse); // for buttons on the interface
         }

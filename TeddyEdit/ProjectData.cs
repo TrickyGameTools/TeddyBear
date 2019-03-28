@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.03.26
+// Version: 19.03.27
 // EndLic
+
 
 
 
@@ -43,9 +44,67 @@ using UseJCR6;
 using TeddyBear;
 using TeddyEdit.Stages;
 
-namespace TeddyEdit
+namespace TeddyEdit    
 {
+    enum TexAllow { NotSet, Deny, Allow, Annoy, Auto }
+    static class MapConfig {
+        static TGINI GINI => ProjectData.MapConfigGINI;
+        static int scrollcount = 1000;
+        static Dictionary<TexAllow, string> AllowCode2String = new Dictionary<TexAllow, string>();
+        static void Save() {
+            scrollcount = 1000;
+            GINI.SaveSource(ProjectData.MapConfigFile);
+        }
+
+        static public int ScrollX { get => qstr.ToInt(GINI.C("ScrollX")); set {
+                GINI.D("ScrollX", $"{value}");
+                scrollcount--;
+                if (scrollcount <= 0) Save();
+            }
+        }
+        static public int ScrollY  {
+            get => qstr.ToInt(GINI.C("ScrollY"));
+            set {
+                GINI.D("ScrollY", $"{value}");
+                scrollcount--;
+                if (scrollcount <= 0) Save();
+            }
+        }
+
+
+        // Get the allow setting
+        static public TexAllow Allow(string Tex, string Lay) {
+            //TexAllow ret = TexAllow.NotSet;
+            var v = GINI.C($"ALLOW.{Tex}.{Lay}");
+            if (v == "") return TexAllow.NotSet;
+            foreach(TexAllow k in AllowCode2String.Keys) {
+                if (AllowCode2String[k] == v) return k;
+            }
+            UI.ErrorNotice = $"I don't have a clue what allow code {v} means!";
+            return TexAllow.NotSet;
+        }
+
+        // Set the allow setting (and thanks to overloading we can give both functions the same name).
+        static public void Allow (string Tex, string Lay, TexAllow a) {
+            GINI.D($"ALLOW.{Tex}.{Lay}", AllowCode2String[a]);
+            Save();
+        }
+
+        static MapConfig() {
+            AllowCode2String[TexAllow.NotSet] = "Not Set"; // Safety precaution!
+            AllowCode2String[TexAllow.Deny] = "Deny";
+            AllowCode2String[TexAllow.Allow] = "Allow";
+            AllowCode2String[TexAllow.Annoy] = "Annoy";
+            AllowCode2String[TexAllow.Auto] = "Auto";
+        }
+        
+
+    }
+
     class ProjectData {
+
+        const string DefaultStorage = "lzma";
+
 #if debuglog
         static QuickStream dbglogbt = QuickStream.WriteFile("E:/Home/Temp/TeddyLog");
 #endif
@@ -64,15 +123,17 @@ namespace TeddyEdit
         static public string MyExe => System.Reflection.Assembly.GetEntryAssembly().Location;
         static public string[] args => Environment.GetCommandLineArgs();
         static string _prj="";
+        static public TGINI MapConfigGINI { get; private set; }
+        static public string MapConfigFile{ get; private set; } = "";
         static public TGINI ProjectConfig { get; private set; } = null;
         static public bool AllWell { get; private set; } = true;
         static public TeddyMap Map { get; private set; } = null;
         static public TJCRDIR texJCR { get; private set; } = null;
-        static public int MapWidth => qstr.ToInt(GlobalConfig.C("SIZEX"));
-        static public int MapHeight => qstr.ToInt(GlobalConfig.C("SIZEY"));
-        static public int MapGridX => qstr.ToInt(GlobalConfig.C("GRIDX"));
-        static public int MapGridY => qstr.ToInt(GlobalConfig.C("GRIDY"));
-        static public string[] MapLayers => GlobalConfig.List("Layers").ToArray();
+        static public int MapWidth => qstr.ToInt(ProjectConfig.C("SIZEX"));
+        static public int MapHeight => qstr.ToInt(ProjectConfig.C("SIZEY"));
+        static public int MapGridX => qstr.ToInt(ProjectConfig.C("GRIDX"));
+        static public int MapGridY => qstr.ToInt(ProjectConfig.C("GRIDY"));
+        static public string[] MapLayers => ProjectConfig.List("Layers").ToArray();
         static public string Project
         {
             get => _prj;
@@ -96,13 +157,33 @@ namespace TeddyEdit
                 foreach (string patch in ProjectConfig.List("Textures")) texJCR.PatchFile(Dirry.AD(patch));
                 if (JCR6.JERROR != "") Log($"{(char)27}[31mJCR6 ERROR: {(char)27}[0m{JCR6.JERROR}");
                 if (!File.Exists(_map)) {
-                    Map = TeddyMap.Create(MapWidth, MapHeight, MapGridX, MapGridY, MapLayers, texJCR);
+                    Log($"Creating a map with {MapLayers.Length} layers");
+                    Map = TeddyMap.Create(MapWidth, MapHeight, MapGridX, MapGridY, MapLayers, texJCR);                    
                 } else {
                     var MJ = JCR6.Dir(_map);
                     if (MJ == null) { Crash.Error(Game, $"Error loading map: {JCR6.JERROR}"); AllWell = false; return; }
                     Map = TeddyMap.Load(MJ, texJCR, "");
                 }
                 if (Map==null) { Crash.Error(Game,$"Error loading map \"{_map}\""); AllWell = false; return; }
+                // The settings file is kept apart from the map file for the main reason that TeddyBear has primarily been designed
+                // for JCR6 based game engines for which JCR6 can merge the map files straight into the game main data file.
+                // This settings file is only for the benefit of this editor, and it would be pointless to keep in the game.
+                // Maybe not very useful for when you plan to use exporters, but for TeddyBear's primary setup essential.
+                // Also these settings are NOT compatible with the old TeddyBear, sorry!
+                MapConfigFile = $"{WorkSpace}/{Project}/{Project}/MapSettings/{qstr.StripDir(value)}.GINI"; 
+                if (File.Exists($"{_map}.Settings.GINI"))
+                    MapConfigGINI = GINI.ReadFromFile($"{_map}.GINI");
+                else
+                    MapConfigGINI = new TGINI();            
+            }
+        }
+
+        static public string MapCompression  {
+            get {
+                var Storage = ProjectConfig.C("Compression").Trim();
+                if (Storage == "")
+                    return DefaultStorage;
+                return Storage;
             }
         }
 
@@ -143,6 +224,7 @@ namespace TeddyEdit
 #if debuglog
             dbglogbt.WriteString($"{message}\n", true);
 #endif
+            System.Diagnostics.Debug.WriteLine(message);
         }
 
         static public void SetGame(Game1 g) { Game = g; }

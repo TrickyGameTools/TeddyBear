@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.03.22
+// Version: 19.03.27
 // EndLic
+
 
 
 
@@ -102,13 +103,16 @@ namespace TeddyEdit
 #endif
                 if (!ProjectData.AllWell) { Crash.Error(this, $"Project loading failed! {ProjectData.Project}"); } else {
 #if DEBUG
-                    ProjectData.MapFile = "Test Map";
+                    ProjectData.MapFile = $"{Dirry.AD(ProjectData.ProjectConfig.C("LevelDir"))}/Test Map";
 #else
-                    ProjectData.MapFile = ProjectData.args[2];
+                    ProjectData.MapFile =  $"{Dirry.AD(ProjectData.ProjectConfig.C("LevelDir"))}{ProjectData.args[2]}";
 #endif
                 }
             }
 
+
+            // Teddy Save Log
+            TeddyBear.TeddySave.SetLog(ProjectData.Log);
 
             // Final
             base.Initialize();

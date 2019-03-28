@@ -33,6 +33,7 @@
 
 
 
+
 #undef supportscript
 
 #region Use this!
@@ -125,6 +126,7 @@ namespace TeddyEdit {
         static int ToolX = 0;
         static TQMGText TxNULL;
         static TeddyMap Map => ProjectData.Map;
+        static public string ErrorNotice = "";
 
         static UI() {
             
@@ -241,6 +243,13 @@ namespace TeddyEdit {
 
         static public void DrawStatusBar(MouseState ms) {
             TQMG.UglyTile(back, 0, ProjectData.Game.Window.ClientBounds.Height - 25, ProjectData.Game.Window.ClientBounds.Width, 25);
+            if (ErrorNotice!="") {
+                TQMG.Color(255, 0, 0);
+                font20.DrawText("ERROR!",20, ProjectData.Game.Window.ClientBounds.Height - 22);
+                TQMG.Color(255, 255, 0);
+                font20.DrawText(ErrorNotice, 100, ProjectData.Game.Window.ClientBounds.Height - 22);
+                return;
+            }
             if (ms.Y>10 && (!MenuOpen)) {
                 ProjectAndFile.Draw(5, ProjectData.Game.Window.ClientBounds.Height - 22);
                 font20.DrawText($"Screen: {ProjectData.Game.Window.ClientBounds.Width}x{ProjectData.Game.Window.ClientBounds.Height}; Mouse: ({ms.X},{ms.Y})", ProjectData.Game.Window.ClientBounds.Width - 5, ProjectData.Game.Window.ClientBounds.Height - 22, TQMG_TextAlign.Right);

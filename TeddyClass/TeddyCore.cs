@@ -1,7 +1,7 @@
 // Lic:
 // TeddyClass/TeddyCore.cs
 // TeddyBear Core
-// version: 19.03.20
+// version: 19.03.27
 // Copyright (C)  Jeroen P. Broks
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -24,9 +24,11 @@
 
 
 
+
 using TrickyUnits;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UseJCR6;
 
 namespace TeddyBear{
@@ -293,7 +295,14 @@ namespace TeddyBear{
             #endregion
 
             #region Layer Creation
-            foreach (string lay in layers) ret.NewLayer(lay,w,h);
+            Debug.WriteLine($"Adding {layers.Length} layers to the new map");
+            foreach (string lay in layers) {
+
+                Debug.WriteLine($"Creating layer: {lay}");
+
+                ret.NewLayer(lay, w, h);
+
+            }
             #endregion
 
             #region Texture Directory
@@ -316,7 +325,7 @@ namespace TeddyBear{
 
     class Core{
         static public void Init(){
-            MKL.Version("TeddyBear - TeddyCore.cs","19.03.20");
+            MKL.Version("TeddyBear - TeddyCore.cs","19.03.27");
             MKL.Lic    ("TeddyBear - TeddyCore.cs","ZLib License");
         }
     }
