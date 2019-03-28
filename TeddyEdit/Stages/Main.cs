@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.03.27
+// Version: 19.03.28
 // EndLic
+
 
 
 
@@ -58,6 +59,10 @@ namespace TeddyEdit.Stages {
                 if (kb.IsKeyDown(Keys.T) && CurTexSpot > 0)
                     TextureLoad.ComeToMe(CurTexSpot);
                 if (kb.IsKeyDown(Keys.S)) SaveMap();
+                if (kb.IsKeyDown(Keys.Left) && UI.ScrollX > 0) { UI.ScrollX -= ProjectData.Map.GridX / 2; if (UI.ScrollX < 0) UI.ScrollX = 0; }
+                if (kb.IsKeyDown(Keys.Up) && UI.ScrollY > 0) { UI.ScrollY -= ProjectData.Map.GridY / 2; if (UI.ScrollY < 0) UI.ScrollY = 0; }
+                if (kb.IsKeyDown(Keys.Down)) UI.ScrollY += ProjectData.Map.GridY / 2;
+                if (kb.IsKeyDown(Keys.Right)) UI.ScrollX += ProjectData.Map.GridX / 2;
             }
             UI.UpdateScreen(mouse); // for buttons on the interface
         }

@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.03.27
+// Version: 19.03.28
 // EndLic
+
 
 
 
@@ -128,9 +129,17 @@ namespace TeddyEdit {
         static TeddyMap Map => ProjectData.Map;
         static public string ErrorNotice = "";
 
+        #region position
+        static MouseState _mouse;
+        static public int ScrollX { get => MapConfig.ScrollX; set => MapConfig.ScrollX = value; }
+        static public int ScrollY { get => MapConfig.ScrollY; set => MapConfig.ScrollY = value; }
+        static public int PosX => (int)Math.Floor((decimal)((float)(_mouse.X + ScrollX) / (float)Map.GridX));
+        static public int PosY => (int)Math.Floor((decimal)((float)((_mouse.Y-back.Height) + ScrollY) / (float)Map.GridY));
+        #endregion
+
         static UI() {
             
-            MKL.Version("TeddyBear - UserInterface.cs","19.03.27");
+            MKL.Version("TeddyBear - UserInterface.cs","19.03.28");
             MKL.Lic    ("TeddyBear - UserInterface.cs","GNU General Public License 3");
             PDM_Bar[PDMEN.File] = "File";
             PDM_Bar[PDMEN.Textures] = "Textures";
@@ -252,7 +261,7 @@ namespace TeddyEdit {
             }
             if (ms.Y>10 && (!MenuOpen)) {
                 ProjectAndFile.Draw(5, ProjectData.Game.Window.ClientBounds.Height - 22);
-                font20.DrawText($"Screen: {ProjectData.Game.Window.ClientBounds.Width}x{ProjectData.Game.Window.ClientBounds.Height}; Mouse: ({ms.X},{ms.Y})", ProjectData.Game.Window.ClientBounds.Width - 5, ProjectData.Game.Window.ClientBounds.Height - 22, TQMG_TextAlign.Right);
+                font20.DrawText($"Screen: {ProjectData.Game.Window.ClientBounds.Width}x{ProjectData.Game.Window.ClientBounds.Height}; ScreenPos: ({ScrollX},{ScrollY}); Mouse: ({ms.X},{ms.Y}); Tile({PosX},{PosY})", ProjectData.Game.Window.ClientBounds.Width - 5, ProjectData.Game.Window.ClientBounds.Height - 22, TQMG_TextAlign.Right);
             }
         }
 
@@ -264,6 +273,7 @@ namespace TeddyEdit {
         }
 
         static public void UpdateScreen(MouseState ms) {
+            _mouse = ms;
             CurrentTool.Mouse(ms);
         }
 
