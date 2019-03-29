@@ -144,6 +144,16 @@ namespace TeddyBear{
             TeddyError = s;
             return null;
         }
+        /// <summary>
+        /// Gives the stream for the draw driver to load the texture from.
+        /// </summary>
+        /// <param name="texturenum"></param>
+        /// <returns>Returns the QuickStream object of this texture. If any sort of error occurs, null is returned.</returns>
+        public QuickStream OpenTexture(byte texturenum, byte Endian=1) {
+            if (texturenum == 0) return null;
+            if (Texture[texturenum] == null || Texture[texturenum]=="") return null;
+            return TextureDir.ReadFile(Texture[texturenum]);
+        }
 
         static public TeddyMap Load(TJCRDIR MapDir, TJCRDIR TexDir, string Map) {
 

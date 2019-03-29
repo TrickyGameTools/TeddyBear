@@ -170,6 +170,12 @@
     <Compile Include="..\TeddyClass\TeddyCore.cs">
       <Link>Imported\TeddyBear\TeddyCore.cs</Link>
     </Compile>
+    <Compile Include="..\TeddyClass\TeddyDraw.cs">
+      <Link>Imported\TeddyBear\TeddyDraw.cs</Link>
+    </Compile>
+    <Compile Include="..\TeddyClass\TeddyDraw_MonoGame.cs">
+      <Link>Imported\TeddyBear\TeddyDraw_MonoGame.cs</Link>
+    </Compile>
     <Compile Include="..\TeddyClass\TeddySave.cs">
       <Link>Imported\TeddyBear\TeddySave.cs</Link>
     </Compile>

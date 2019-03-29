@@ -250,6 +250,12 @@ namespace TeddyEdit {
             CurrentTool.Draw(mouse);
         }
 
+        static public void DrawMap() {
+            foreach(string lay in ProjectData.ProjectConfig.List("Layers")) {
+                TeddyDraw.DrawLayer(ProjectData.Map,lay,0,25,ScrollX,ScrollY);
+            }
+        }
+
         static public void DrawStatusBar(MouseState ms) {
             TQMG.UglyTile(back, 0, ProjectData.Game.Window.ClientBounds.Height - 25, ProjectData.Game.Window.ClientBounds.Width, 25);
             if (ErrorNotice!="") {
@@ -266,7 +272,7 @@ namespace TeddyEdit {
         }
 
         static public void DrawScreen(MouseState ms) {
-            //DrawMap();
+            DrawMap();
             DrawToolBox(ms); // Toolbos MUST come BEFORE pull down menu and status bar (conflict prevention)
             DrawPDMenu();
             DrawStatusBar(ms);

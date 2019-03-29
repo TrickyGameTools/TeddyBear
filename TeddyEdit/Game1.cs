@@ -72,12 +72,17 @@ namespace TeddyEdit
             ProjectData.InitJCRDrivers();
             ProjectData.SetGame(this);
 
-            // ScreenSize
+            #region Screen Size
             //graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
             //graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
             graphics.HardwareModeSwitch = false;
             graphics.IsFullScreen = true;
             graphics.ApplyChanges();
+            #endregion
+
+            #region TeddyBear Draw MonoGame Driver
+            TeddyBear.TeddyDraw_MonoGame.Init();
+            #endregion
 
             // Sprite Batch
             SB = new SpriteBatch(GraphicsDevice);
