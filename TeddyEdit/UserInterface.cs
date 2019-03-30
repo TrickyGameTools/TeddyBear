@@ -87,7 +87,7 @@ namespace TeddyEdit {
             }
             public bool selected = false;
             readonly public int x;
-            string Name;
+            readonly public string Name;
             readonly public ToolDraw Draw;
             readonly public ToolMouse Mouse;
             public ToolKind(int getx, string getname, ToolDraw getdraw, ToolMouse getmouse) {
@@ -290,9 +290,62 @@ namespace TeddyEdit {
             CurrentTool.Draw(mouse);
         }
 
-        static public void DrawMap() {
+        static void SetUpRecFill(int TexSpot, string CurrentLayer, int sx, int sy, int ex, int ey)
+        {
+
+        }
+
+        static public void DrawMap(MouseState mouse) {
+            const int mapy = 25;
             foreach(string lay in LayerList) {
-                TeddyDraw.DrawLayer(ProjectData.Map,lay,0,25,ScrollX,ScrollY);
+                TeddyDraw.DrawLayer(ProjectData.Map,lay,0,mapy,ScrollX,ScrollY);
+            }
+            if (mouse.Y < mapy || mouse.X > ToolX) startX = -1;
+            else if (mouse.LeftButton==ButtonState.Pressed && startX<0) { startX = ScrollX + mouse.X; startY = ScrollY + mouse.Y; }
+            if (startX >= 0 && startY >= 0) {
+                ErrorNotice = "";
+                var sx = 0;
+                var sy = 0;
+                var ex = 0;
+                var ey = 0;
+                var mx = ScrollX;
+                var my = ScrollY;
+                my -= mapy;
+                mx += (int)Math.Floor((decimal)(mouse.X / ProjectData.Map.GridX)) * ProjectData.Map.GridX; // I guess this doesn't make sense to you? :P
+                my += (int)Math.Floor((decimal)(mouse.Y / ProjectData.Map.GridY)) * ProjectData.Map.GridY;
+                if (mx == startX) { sx = mx; ex = mx; } else if (mx < startX) { sx = mx; ex = startX; } else { sx = startX; ex = mx; }
+                if (my == startY) { sy = my; ey = my; } else if (my < startY) { sy = my; ey = startX; } else { sy = startX; ey = my; }
+                TQMG.SetAlpha(25);
+                TQMG.Color(255, 0, 0);
+                TQMG.DrawRectangle(sx, sy, ex - sx, ey - sy);
+                TQMG.SetAlpha(255);
+                if (mouse.LeftButton != ButtonState.Pressed) {
+                    if (CurrentTool.Name == "Layers") {
+                        if (!MapConfig.AllowSet(Map.Texture[TexSpot]) && TexSpot != 0) {
+                            ErrorNotice = "Allowance not yet set! Please hit ctrl-o in order to configure that!";
+                        } else {
+                            foreach (string l in ProjectData.Map.Layers.Keys) if (MapConfig.Allow(Map.Texture[TexSpot], l) == TexAllow.Auto) CurrentLayer = l;
+                            switch (MapConfig.Allow(Map.Texture[TexSpot], CurrentLayer)) {
+                                case TexAllow.NotSet: break; // Just ignore the whole thing!
+                                case TexAllow.Allow:
+                                case TexAllow.Auto:
+                                    SetUpRecFill(TexSpot, CurrentLayer, sx, sy, ex, ey);
+                                    break;
+                                case TexAllow.Annoy:
+                                    ErrorNotice = "The 'Annoy' setting has not yet been supported!";
+                                    break;
+                                case TexAllow.Deny:
+                                    ErrorNotice = "You denied that texture yourself from this spot!";
+                                    break;
+                                default:
+                                    ErrorNotice = "INTERNAL ERROR! Unknown allowance setting! Version conflicts between source files?";
+                                    break;
+                            }
+                        }
+                    }
+                    startX = -1;
+                    startY = -1;
+                }
             }
         }
 
@@ -312,7 +365,7 @@ namespace TeddyEdit {
         }
 
         static public void DrawScreen(MouseState ms) {
-            DrawMap();
+            DrawMap(ms);
             DrawToolBox(ms); // Toolbos MUST come BEFORE pull down menu and status bar (conflict prevention)
             DrawPDMenu();
             DrawStatusBar(ms);

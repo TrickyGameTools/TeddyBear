@@ -91,6 +91,14 @@ namespace TeddyEdit
             Save();
         }
 
+        static public bool AllowSet(string Tex) {
+            var ret = false;
+            foreach(string lay in ProjectData.Map.Layers.Keys) {
+                ret = ret || Allow(Tex, lay) != TexAllow.NotSet;
+            }
+            return ret;
+        }
+
         static MapConfig() {
             AllowCode2String[TexAllow.NotSet] = "Not Set"; // Safety precaution!
             AllowCode2String[TexAllow.Deny] = "Deny";
