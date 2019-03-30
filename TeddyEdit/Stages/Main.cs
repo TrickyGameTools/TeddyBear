@@ -30,6 +30,7 @@
 
 
 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,6 +65,7 @@ namespace TeddyEdit.Stages {
                 if (kb.IsKeyDown(Keys.Up) && UI.ScrollY > 0) { UI.ScrollY -= ProjectData.Map.GridY / 2; if (UI.ScrollY < 0) UI.ScrollY = 0; }
                 if (kb.IsKeyDown(Keys.Down)) UI.ScrollY += ProjectData.Map.GridY / 2;
                 if (kb.IsKeyDown(Keys.Right)) UI.ScrollX += ProjectData.Map.GridX / 2;
+                if (kb.IsKeyDown(Keys.O)) SetAllowance.ComeToMe(CurTexSpot);
             }
             UI.UpdateScreen(mouse); // for buttons on the interface
         }

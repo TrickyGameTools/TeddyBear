@@ -31,6 +31,7 @@
 
 
 
+
 #define debuglog
 
 
@@ -180,9 +181,10 @@ namespace TeddyEdit
                 // This settings file is only for the benefit of this editor, and it would be pointless to keep in the game.
                 // Maybe not very useful for when you plan to use exporters, but for TeddyBear's primary setup essential.
                 // Also these settings are NOT compatible with the old TeddyBear, sorry!
-                MapConfigFile = $"{WorkSpace}/{Project}/{Project}/MapSettings/{qstr.StripDir(value)}.GINI"; 
-                if (File.Exists($"{_map}.Settings.GINI"))
-                    MapConfigGINI = GINI.ReadFromFile($"{_map}.GINI");
+                MapConfigFile = $"{WorkSpace}/{Project}/{Project}/MapSettings/{qstr.StripDir(value)}.GINI";
+                Directory.CreateDirectory(qstr.ExtractDir(MapConfigFile));
+                if (File.Exists($"{MapConfigFile}.Settings.GINI"))
+                    MapConfigGINI = GINI.ReadFromFile($"{MapConfigFile}.GINI");
                 else
                     MapConfigGINI = new TGINI();            
             }

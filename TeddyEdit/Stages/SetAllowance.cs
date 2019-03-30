@@ -24,7 +24,8 @@
 // Version: 19.03.30
 // EndLic
 
-Ã¯Â»Â¿using System;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,6 +44,7 @@ namespace TeddyEdit.Stages
         static TQMGText Head;
         static SortedDictionary<TexAllow, TQMGText> AllowText = new SortedDictionary<TexAllow, TQMGText>();
         static Dictionary<string, TQMGText> LayerText = new Dictionary<string, TQMGText>();
+        static MouseState myMouse;
 
         public override void Draw(Game1 game, GameTime gameTime) {
             TQMG.Color(127, 127, 127);
@@ -70,7 +72,8 @@ namespace TeddyEdit.Stages
         }
 
         public override void Update(Game1 game, GameTime gameTime, MouseState mouse, GamePadState gamepad, KeyboardState kb) {
-            
+            myMouse = mouse;
+            if (kb.IsKeyDown(Keys.Escape)) Main.ComeToMe();
         }
 
         static void LAL(TexAllow a,string txt) {
@@ -80,11 +83,13 @@ namespace TeddyEdit.Stages
         public static void ComeToMe(int aTex) {
             if (me == null) me = new SetAllowance();
             Tex = aTex;
+            if (Tex == 0) return;
             Head = UI.font32.Text($"Please set up the allowance state for {Tex.ToString("X2")}");
             LAL(TexAllow.Allow, "Allow");
             LAL(TexAllow.Deny, "Deny");
             LAL(TexAllow.Annoy, "Annoy");
-            LAL(TexAllow.Auto, "Auto");            
+            LAL(TexAllow.Auto, "Auto");
+            ProjectData.Game.SetStage(me);
         }
 
     }
