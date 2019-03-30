@@ -1,7 +1,7 @@
 // Lic:
 // TeddyClass/TeddyCore.cs
 // TeddyBear Core
-// version: 19.03.27
+// version: 19.03.30
 // Copyright (C)  Jeroen P. Broks
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -17,6 +17,7 @@
 // misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 // EndLic
+
 
 
 
@@ -145,14 +146,22 @@ namespace TeddyBear{
             return null;
         }
         /// <summary>
+
         /// Gives the stream for the draw driver to load the texture from.
+
         /// </summary>
+
         /// <param name="texturenum"></param>
+
         /// <returns>Returns the QuickStream object of this texture. If any sort of error occurs, null is returned.</returns>
         public QuickStream OpenTexture(byte texturenum, byte Endian=1) {
+
             if (texturenum == 0) return null;
+
             if (Texture[texturenum] == null || Texture[texturenum]=="") return null;
+
             return TextureDir.ReadFile(Texture[texturenum]);
+
         }
 
         static public TeddyMap Load(TJCRDIR MapDir, TJCRDIR TexDir, string Map) {
@@ -335,7 +344,7 @@ namespace TeddyBear{
 
     class Core{
         static public void Init(){
-            MKL.Version("TeddyBear - TeddyCore.cs","19.03.27");
+            MKL.Version("TeddyBear - TeddyCore.cs","19.03.30");
             MKL.Lic    ("TeddyBear - TeddyCore.cs","ZLib License");
         }
     }
