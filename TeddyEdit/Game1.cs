@@ -157,8 +157,10 @@ namespace TeddyEdit
             var gpstate = GamePad.GetState(PlayerIndex.One);
             var kbstate = Keyboard.GetState();
             // This line will for now remain, but may have to leave once the editor is really getting to move 
-            if (gpstate.Buttons.Back == ButtonState.Pressed || kbstate.IsKeyDown(Keys.Escape))
+            if (kbstate.IsKeyDown(Keys.Q) && (kbstate.IsKeyDown(Keys.LeftControl) || kbstate.IsKeyDown(Keys.RightControl))) {
+                Main.Me.SaveMap();
                 Exit();
+            }
 
             // TODO: Add your update logic here
             var mstate = Mouse.GetState();
