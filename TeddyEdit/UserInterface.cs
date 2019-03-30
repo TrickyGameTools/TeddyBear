@@ -118,8 +118,8 @@ namespace TeddyEdit {
         static int TexSpot { get => Main.CurTexSpot; set { Main.CurTexSpot = value; } }
 
         #region Layer data
-        static string[] LayerList;
-        static TQMGText[] LayerText;
+        static public string[] LayerList { get; private set; }
+        static public TQMGText[] LayerText { get; private set; }
         static bool[] LayerVisible;
         static string CurrentLayer;
         #endregion

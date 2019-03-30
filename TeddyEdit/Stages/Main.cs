@@ -45,7 +45,7 @@ namespace TeddyEdit.Stages {
         MouseState MS;
         static public int CurTexSpot = 1;
 
-        void SaveMap() {
+        public void SaveMap() {
             UI.ErrorNotice = "";
             ProjectData.Log($"Compresion = {ProjectData.MapCompression}");
             var r = TeddySave.Save(ProjectData.Map, ProjectData.MapFile, "", ProjectData.MapCompression,ProjectData.MapCompression);
