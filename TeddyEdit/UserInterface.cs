@@ -109,14 +109,23 @@ namespace TeddyEdit {
         static public TJCRDIR JCR { get; private set; }
         static public Game1 Game { get; private set; }
         static public TQMGImage back { get; private set; }
+        static public TQMGImage Visible { get; private set; }
         static TQMGText ProjectAndFile;
         static public TQMGImage ArrowUp { get; private set; }
         static public TQMGImage ArrowDn { get; private set; }
         static public TQMGImage ArrowDown => ArrowDn;
         static int TexSpot { get => Main.CurTexSpot; set { Main.CurTexSpot = value; } }
 
+        #region Layer data
+        static string[] LayerList;
+        static TQMGText[] LayerText;
+        static bool[] LayerVisible;
+        static string CurrentLayer;
+        #endregion
+
         static public int ScrWidth => ProjectData.Game.Window.ClientBounds.Width;
         static public int ScrHeight => ProjectData.Game.Window.ClientBounds.Height;
+
 
         static Dictionary<bool, TQMGImage> ToolButton = new Dictionary<bool, TQMGImage>();
 
@@ -130,6 +139,8 @@ namespace TeddyEdit {
         static public string ErrorNotice = "";
 
         #region position
+        static public int startX = -1;
+        static public int startY = -1;
         static MouseState _mouse;
         static public int ScrollX { get => MapConfig.ScrollX; set => MapConfig.ScrollX = value; }
         static public int ScrollY { get => MapConfig.ScrollY; set => MapConfig.ScrollY = value; }
@@ -147,15 +158,28 @@ namespace TeddyEdit {
 #if supportscript
             PDM_Bar[PDMEN.Script] = "Script"
 #endif
+            #region load fonts
             font12 = TQMG.GetFont("fonts/SulphurPoint-Regular.12.jfbf");
             font20 = TQMG.GetFont("fonts/SulphurPoint-Regular.20.jfbf");
             font32 = TQMG.GetFont("fonts/SulphurPoint-Regular.32.jfbf");
+            #endregion
+
             TxNULL = font32.Text("<NULL>");
             foreach (PDMEN i in PDM_Bar.Keys) PDM_Caption[i] = font20.Text(PDM_Bar[i]);
             back = TQMG.GetImage("metal.jpg");
             ProjectAndFile = font20.Text($"Project: {ProjectData.Project}; Map: {ProjectData.MapFile}");
             ArrowUp = TQMG.GetImage("Arrow_Up.png");
             ArrowDn = TQMG.GetImage("Arrow_Down.png");
+            Visible = TQMG.GetImage("Visible.png");
+
+            LayerList = ProjectData.ProjectConfig.List("Layers").ToArray(); // Hopefully this fastens things up (a bit).
+            LayerText = new TQMGText[LayerList.Length];
+            LayerVisible = new bool[LayerList.Length];
+            for (int i = 0; i < LayerList.Length; i++) {
+                LayerText[i] = font20.Text(LayerList[i]);
+                LayerVisible[i] = true;
+            }
+            CurrentLayer = LayerList[0];
 
             #region Create the tools
             void NewTool(string name,ToolDraw draw, ToolMouse mouse) {
@@ -171,6 +195,7 @@ namespace TeddyEdit {
         }
 
         static bool ArrowWasPressed = false;
+        static MouseState Tool_LastMouse;
         static void Tool_Layers(MouseState mouse) {
             TQMG.Color(0, 180, 255);
             if (mouse.X > ToolX && mouse.X < ToolX + 32 && mouse.Y > 150 && mouse.Y < 182) TQMG.Color(180, 0, 255);
@@ -207,6 +232,20 @@ namespace TeddyEdit {
                     }
                 }
             }
+            for(int i=0; i < LayerList.Length; i++) {
+                int PosY = 210 + (i * 21);
+                TQMG.Color(255, 255, 255);
+                if (LayerVisible[i]) { Visible.Draw(ToolX + 5, PosY); }
+                if (LayerList[i] == CurrentLayer) TQMG.Color(255, 180, 0);
+                LayerText[i].Draw(ToolX + 100, PosY);
+                if (mouse.Y >= PosY && mouse.Y <= PosY + 20 && mouse.LeftButton == ButtonState.Pressed) {
+                    if (mouse.X > ToolX + 100)
+                        CurrentLayer = LayerList[i];
+                    else if (mouse.X > ToolX && Tool_LastMouse.LeftButton!=ButtonState.Pressed)
+                        LayerVisible[i] = !LayerVisible[i];
+                }
+            }
+            Tool_LastMouse = mouse;
         }
 
         static void Tool_LayersUpdate(MouseState mouse)  {
@@ -251,7 +290,7 @@ namespace TeddyEdit {
         }
 
         static public void DrawMap() {
-            foreach(string lay in ProjectData.ProjectConfig.List("Layers")) {
+            foreach(string lay in LayerList) {
                 TeddyDraw.DrawLayer(ProjectData.Map,lay,0,25,ScrollX,ScrollY);
             }
         }
