@@ -25,6 +25,7 @@
 // EndLic
 
 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,6 +66,7 @@ namespace TeddyEdit.Stages
                     else
                         TQMG.Color(180, 0, 255);
                     AllowText[a].Draw(cx, cy, TQMG_TextAlign.Center);
+                    if (myMouse.Y > cy && myMouse.Y < cy + 20 && myMouse.X > cx - 70 && myMouse.X < cx + 70 && myMouse.LeftButton == ButtonState.Pressed) MapConfig.Allow(ProjectData.Map.Texture[Tex], UI.LayerList[i], a);
                     // TODO: Click this
                 }
             }
