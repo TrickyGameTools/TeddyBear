@@ -306,14 +306,18 @@ namespace TeddyEdit {
                 /* BAAAAAD!
                 startX = ScrollX + mouse.X; startY = ScrollY + mouse.Y;
                 */
+                startX = PosX;
+                startY = PosY;
             }
             if (startX >= 0 && startY >= 0) {
                 ErrorNotice = "";
-                /* I am certainly not happy about this!
                 var sx = 0;
                 var sy = 0;
                 var ex = 0;
                 var ey = 0;
+                var gx = ProjectData.Map.GridX;
+                var gy = ProjectData.Map.GridY;
+                /* I am certainly not happy about this!
                 var mx = ScrollX;
                 var my = ScrollY;
                 my -= mapy;
@@ -326,6 +330,12 @@ namespace TeddyEdit {
                 TQMG.DrawRectangle(sx, sy, ex - sx, ey - sy);
                 TQMG.SetAlpha(255);
                 */
+                if (PosX == startX) { sx = PosX; ex = PosX; } else if (PosX < startX) { sx = PosX; ex = startX; } else { sx = startX; ex = PosX; }
+                if (PosY == startY) { sy = PosY; ey = PosY; } else if (PosY < startY) { sy = PosY; ey = startY; } else { sy = startY; ey = PosY; }
+                TQMG.SetAlpha(25);
+                TQMG.Color(255, 0, 0);
+                TQMG.DrawRectangle((sx*gx)-ScrollX, (sy*gy)-ScrollY, ((ex - sx)*gx)-ScrollX, ((ey - sy)*gy)-ScrollY);
+                TQMG.SetAlpha(255);
                 if (mouse.LeftButton != ButtonState.Pressed) {
                     if (CurrentTool.Name == "Layers") {
                         if (!MapConfig.AllowSet(Map.Texture[TexSpot]) && TexSpot != 0) {
