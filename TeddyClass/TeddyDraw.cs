@@ -1,7 +1,7 @@
 // Lic:
 // TeddyClass/TeddyDraw.cs
 // TeddyBear C#
-// version: 19.03.30
+// version: 19.03.31
 // Copyright (C)  Jeroen P. Broks
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -19,7 +19,10 @@
 // EndLic
 
 
+
 using TrickyUnits;
+using System.Diagnostics;
+using System;
 
 namespace TeddyBear {
 
@@ -37,9 +40,7 @@ namespace TeddyBear {
 
 
         public static d_DrawItem DrawTileItem = delegate { throw new System.Exception("No driver has been set up to draw in!"); };
-
         public static d_DrawItem DrawZoneItem = delegate { throw new System.Exception("No driver has been set up to draw in!"); };
-
         public static d_TexReset TexReset = delegate { throw new System.Exception("No TexReset in the driver or driver has not yet been set."); };
 
        
@@ -47,27 +48,21 @@ namespace TeddyBear {
 
 
         static public void DrawLayer(TeddyMap map, string Layer,  int x=0, int y= 0, int scrollx=0, int scrolly = 0, bool[,] visibilityMap=null) {
-
             d_DrawItem DrawItem = DrawTileItem;
-
             if (qstr.Prefixed(Layer.ToUpper(), "ZONE_")) DrawItem = DrawZoneItem;
-
             for (int iy = 0; iy < map.Layers[Layer].H; iy++) {
-
                 for (int ix = 0; ix < map.Layers[Layer].W; ix++) {
+                    try {
 
-                    DrawItem(map, Layer, x, y, scrollx, scrolly, ix, iy);
+                        DrawItem(map, Layer, x, y, scrollx, scrolly, ix, iy);
 
+                    } catch (Exception e) {
+
+                        Debug.WriteLine($"DrawLayer error! {e.Message} >> Layer: {Layer}({x},{y})");
+
+                    }
                 }
-
             }
-
         }
-
-
-
     }
-
-
-
 }

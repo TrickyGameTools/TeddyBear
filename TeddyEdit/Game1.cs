@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.03.30
+// Version: 19.03.31
 // EndLic
+
 
 
 
@@ -94,6 +95,9 @@ namespace TeddyEdit
 
             // TQMG
             TQMG.Init(graphics, GraphicsDevice, SB, ProjectData.JCR);
+
+            // Unknown
+            TeddyBear.TeddyDraw_MonoGame.SetUnknown(TQMG.GetImage("Unknown.png"));
 
             // Do we have a project and a map?
 #if DEBUG

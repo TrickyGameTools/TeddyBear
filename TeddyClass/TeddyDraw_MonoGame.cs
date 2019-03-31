@@ -1,7 +1,7 @@
 // Lic:
 // TeddyClass/TeddyDraw_MonoGame.cs
 // TeddyBear C#
-// version: 19.03.30
+// version: 19.03.31
 // Copyright (C)  Jeroen P. Broks
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -17,6 +17,7 @@
 // misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 // EndLic
+
 
 
 using TrickyUnits;
@@ -40,21 +41,31 @@ namespace TeddyBear {
 
         public static void SetUnknown(TQMGImage ui) => Unknown = ui;
 
-        
 
 
 
-        public static void Init() {
+
+
+
+
+
+
+
+        public static void Init()
+
+        {
 
             Error = "";
 
-            MKL.Version("TeddyBear - TeddyDraw_MonoGame.cs","19.03.30");
+            MKL.Version("TeddyBear - TeddyDraw_MonoGame.cs","19.03.31");
 
             MKL.Lic    ("TeddyBear - TeddyDraw_MonoGame.cs","ZLib License");
 
             // This item will allow MonoGame to draw tiles in the map
 
-            TeddyDraw.DrawTileItem = delegate (TeddyMap map, string layer, int screenstart_x, int screenstart_y, int scroll_x, int scroll_y, int posx, int posy){
+            TeddyDraw.DrawTileItem = delegate (TeddyMap map, string layer, int screenstart_x, int screenstart_y, int scroll_x, int scroll_y, int posx, int posy)
+
+            {
 
                 //TeddyMap map, string layer, int screenstart_x, int screenstart_y, int scroll_x, int scroll_y, int posx, int posy
 
@@ -62,7 +73,7 @@ namespace TeddyBear {
 
                 if (!map.Layers.ContainsKey(layer)) { Error = $"Layer '{layer}' does not exist in this map!"; return; }
 
-                if (qstr.Prefixed(layer,"Zone_")) { TeddyDraw.DrawZoneItem(map, layer, screenstart_x, screenstart_y, scroll_x, scroll_y, posx, posy); return; }
+                if (qstr.Prefixed(layer, "Zone_")) { TeddyDraw.DrawZoneItem(map, layer, screenstart_x, screenstart_y, scroll_x, scroll_y, posx, posy); return; }
 
                 var b = map.Layers[layer].Get(posx, posy);
 
@@ -70,15 +81,25 @@ namespace TeddyBear {
 
                 if (map.Texture[b] == null || map.Texture[b] == "") Texture[b] = Unknown;
 
-                if (Texture[b]==null) {
+                if (Texture[b] == null) {
 
-                    var bt = map.OpenTexture(b);
+                    try {
 
-                    if (bt == null) return;
+                        var bt = map.OpenTexture(b);
 
-                    Texture[b] = TQMG.GetImage(bt);
+                        if (bt == null) { Texture[b] = Unknown; return; }
 
-                    if (Texture[b] == null) Texture[b] = Unknown;
+                        Texture[b] = TQMG.GetImage(bt);
+
+                        if (Texture[b] == null) Texture[b] = Unknown;
+
+                    } catch (System.Exception er) {
+
+                        System.Diagnostics.Debug.WriteLine($"An error happened when loading a texture: {er.Message}");
+
+                        Texture[b] = Unknown;
+
+                    }
 
                 }
 
@@ -93,35 +114,27 @@ namespace TeddyBear {
 
 
             // This item will allow MonoGame to draw the zone layer. 
-
             // Basically only required for editors, as zones should be invisible in games.
+            TeddyDraw.DrawZoneItem = delegate
 
-            TeddyDraw.DrawZoneItem = delegate {
-
+            {
                 Error = "";
-
             };
 
 
 
-            TeddyDraw.TexReset = delegate (byte b) {
+            TeddyDraw.TexReset = delegate (byte b)
 
+            {
                 if (b == 0) {
-
                     for (byte i = 255; i > 0; i--) TeddyDraw.TexReset(i);
-
                     return;
-
                 }
-
                 Texture[b] = null;
-
             };
-
         }
 
 
 
     }
-
 }

@@ -1,7 +1,7 @@
 // Lic:
 // TeddyClass/TeddyCore.cs
 // TeddyBear Core
-// version: 19.03.30
+// version: 19.03.31
 // Copyright (C)  Jeroen P. Broks
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -17,6 +17,7 @@
 // misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 // EndLic
+
 
 
 
@@ -42,14 +43,36 @@ namespace TeddyBear{
 
         public TeddyLayer(int width,int height,int T=0, string HotSpot="TL") {
             if (width < 2 || height < 2) throw new Exception($"Format of layer must be at least 2x2. {width}x{height} is therefore not valid!");
-            buf = new byte[height, width];
+            buf = new byte[height+1, width+1];
             Hot = HotSpot;
+            W = height;
+            H = width;
         }
 
 
 
-        public byte Get(int x, int y) => buf[y, x];
-        public void Put(int x, int y, byte v) { buf[y, x] = v; }
+        public byte Get(int x, int y) {
+
+            if (x >= buf.GetLength(1) || y>=buf.GetLength(0)) Debug.WriteLine($"Get({x},{y}) ({buf.GetLength(1) - 1}x{buf.GetLength(0) - 1}) Out of bounds?");
+
+            return buf[y, x];
+
+        }
+        public void Put(int x, int y, byte v) {
+
+            try {
+
+                buf[y, x] = v;
+
+                Debug.WriteLine($"<map>.Put({x},{y},{v}); Done");
+
+            } catch (Exception err) {
+
+                Debug.WriteLine($"<map>.Put({x},{y},{v}); Error:  {err.Message}  {W}x{H} ");
+
+            }
+
+        }
 
     }
 
@@ -344,7 +367,7 @@ namespace TeddyBear{
 
     class Core{
         static public void Init(){
-            MKL.Version("TeddyBear - TeddyCore.cs","19.03.30");
+            MKL.Version("TeddyBear - TeddyCore.cs","19.03.31");
             MKL.Lic    ("TeddyBear - TeddyCore.cs","ZLib License");
         }
     }

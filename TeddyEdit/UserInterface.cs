@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.03.30
+// Version: 19.03.31
 // EndLic
+
 
 
 
@@ -152,7 +153,7 @@ namespace TeddyEdit {
 
         static UI() {
             
-            MKL.Version("TeddyBear - UserInterface.cs","19.03.30");
+            MKL.Version("TeddyBear - UserInterface.cs","19.03.31");
             MKL.Lic    ("TeddyBear - UserInterface.cs","GNU General Public License 3");
             PDM_Bar[PDMEN.File] = "File";
             PDM_Bar[PDMEN.Textures] = "Textures";
@@ -291,9 +292,15 @@ namespace TeddyEdit {
             CurrentTool.Draw(mouse);
         }
 
-        static void SetUpRecFill(int TexSpot, string CurrentLayer, int sx, int sy, int ex, int ey)
+        static void SetUpRecFill(int TexSpot, string Layer, int sx, int sy, int ex, int ey)
         {
-
+            for (int ix = sx; ix <= ex; ix++) {
+                for (int iy = sy; iy <= ey; iy++) {
+                    if (ix<=ProjectData.MapWidth && ix>=0 && iy>=0 && iy <= ProjectData.MapHeight) {
+                        Map.Layers[Layer].Put(ix, iy, (byte)TexSpot);
+                    }
+                }
+            }
         }
 
         static public void DrawMap(MouseState mouse) {
