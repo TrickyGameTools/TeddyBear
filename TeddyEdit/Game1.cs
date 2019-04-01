@@ -95,9 +95,12 @@ namespace TeddyEdit
 
             // TQMG
             TQMG.Init(graphics, GraphicsDevice, SB, ProjectData.JCR);
+            TQMG.RegLog( ProjectData.Log);
 
             // Unknown
             TeddyBear.TeddyDraw_MonoGame.SetUnknown(TQMG.GetImage("Unknown.png"));
+            TeddyBear.TeddyDraw_MonoGame.Log = ProjectData.Log;
+                
 
             // Do we have a project and a map?
 #if DEBUG

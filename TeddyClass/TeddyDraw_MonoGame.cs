@@ -18,95 +18,59 @@
 // 3. This notice may not be removed or altered from any source distribution.
 // EndLic
 
-
+#undef donttry
 
 using TrickyUnits;
 
 // MonoGame class
-namespace TeddyBear {
+namespace TeddyBear
+{
 
+    delegate void TDMGLog(string msg);
 
-
-    static class TeddyDraw_MonoGame {
-
-
-
+    static class TeddyDraw_MonoGame
+    {
         static TQMGImage Unknown;
-
         static TQMGImage[] Texture = new TQMGImage[256];
-
         static public string Error { get; private set; }
-
-
+        static public TDMGLog Log = delegate (string msg) { System.Diagnostics.Debug.WriteLine($"Log: {msg}"); };
 
         public static void SetUnknown(TQMGImage ui) => Unknown = ui;
 
-
-
-
-
-
-
-
-
-
-
         public static void Init()
-
         {
-
             Error = "";
-
-            MKL.Version("TeddyBear - TeddyDraw_MonoGame.cs","19.03.31");
-
-            MKL.Lic    ("TeddyBear - TeddyDraw_MonoGame.cs","ZLib License");
-
+            MKL.Version("TeddyBear - TeddyDraw_MonoGame.cs", "19.03.31");
+            MKL.Lic("TeddyBear - TeddyDraw_MonoGame.cs", "ZLib License");
             // This item will allow MonoGame to draw tiles in the map
-
             TeddyDraw.DrawTileItem = delegate (TeddyMap map, string layer, int screenstart_x, int screenstart_y, int scroll_x, int scroll_y, int posx, int posy)
-
             {
-
                 //TeddyMap map, string layer, int screenstart_x, int screenstart_y, int scroll_x, int scroll_y, int posx, int posy
-
                 Error = "";
-
                 if (!map.Layers.ContainsKey(layer)) { Error = $"Layer '{layer}' does not exist in this map!"; return; }
-
                 if (qstr.Prefixed(layer, "Zone_")) { TeddyDraw.DrawZoneItem(map, layer, screenstart_x, screenstart_y, scroll_x, scroll_y, posx, posy); return; }
-
                 var b = map.Layers[layer].Get(posx, posy);
-
                 if (b == 0) return; // 0 stands for nothing and should therefore always be ignored!
-
-                if (map.Texture[b] == null || map.Texture[b] == "") Texture[b] = Unknown;
-
+                if (map.Texture[b] == null || map.Texture[b] == "") { Texture[b] = Unknown; Log($"No texture set on {b}"); }
                 if (Texture[b] == null) {
-
+#if !donttry
                     try {
-
+#endif
+                        Log($"Loading texture for spot {b} => {map.Texture[b]}");
                         var bt = map.OpenTexture(b);
-
-                        if (bt == null) { Texture[b] = Unknown; return; }
-
+                        if (bt == null) { Texture[b] = Unknown; Log($"JCR6 failed to open the texture file! {UseJCR6.JCR6.JERROR}"); return; }
                         Texture[b] = TQMG.GetImage(bt);
-
-                        if (Texture[b] == null) Texture[b] = Unknown;
-
+                        if (Texture[b] == null) { Texture[b] = Unknown; Log($"Texture load failed! {map.Texture[b]}"); } else { Log("Texture appears to be loaded succesfully!"); }
+#if !donttry
                     } catch (System.Exception er) {
-
-                        System.Diagnostics.Debug.WriteLine($"An error happened when loading a texture: {er.Message}");
-
+                        Log($"An error happened when loading a texture: {er.Message} >> {er.StackTrace}");
                         Texture[b] = Unknown;
-
                     }
-
+#endif
                 }
 
                 if (Texture[b] != null) {
-
                     Texture[b].Draw((screenstart_x + (posx * map.GridX)) - scroll_x, (screenstart_y + (posy * map.GridY)) - scroll_y);
-
                 }
 
             };
@@ -116,7 +80,6 @@ namespace TeddyBear {
             // This item will allow MonoGame to draw the zone layer. 
             // Basically only required for editors, as zones should be invisible in games.
             TeddyDraw.DrawZoneItem = delegate
-
             {
                 Error = "";
             };
@@ -124,7 +87,6 @@ namespace TeddyBear {
 
 
             TeddyDraw.TexReset = delegate (byte b)
-
             {
                 if (b == 0) {
                     for (byte i = 255; i > 0; i--) TeddyDraw.TexReset(i);

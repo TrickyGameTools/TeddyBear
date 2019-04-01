@@ -155,6 +155,9 @@
     <Compile Include="..\..\TrickyUnits\Dirry.cs">
       <Link>Imported\units\Dirry.cs</Link>
     </Compile>
+    <Compile Include="..\..\TrickyUnits\FileList.cs">
+      <Link>Imported\units\FileList.cs</Link>
+    </Compile>
     <Compile Include="..\..\TrickyUnits\GINI Is Not Ini.cs">
       <Link>Imported\units\GINI Is Not Ini.cs</Link>
     </Compile>
