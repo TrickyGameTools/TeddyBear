@@ -24,20 +24,7 @@
 // Version: 19.03.31
 // EndLic
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#define TeddyUICrash
 #undef supportscript
 
 #region Use this!
@@ -389,15 +376,29 @@ namespace TeddyEdit {
         }
 
         static public void DrawScreen(MouseState ms) {
-            DrawMap(ms);
-            DrawToolBox(ms); // Toolbos MUST come BEFORE pull down menu and status bar (conflict prevention)
-            DrawPDMenu();
-            DrawStatusBar(ms);
+            try {
+                DrawMap(ms);
+                DrawToolBox(ms); // Toolbox MUST come BEFORE pull down menu and status bar (conflict prevention)
+                DrawPDMenu();
+                DrawStatusBar(ms);
+            } catch (Exception Ex) {
+                ProjectData.Log($"Exception caught: {Ex.Message}\n{Ex.StackTrace}");
+#if TeddyUICrash
+                Crash.Error(ProjectData.Game, $"DUI-Flow Error:\n{Ex.Message}\n\nTraceback:\n{Ex.StackTrace}\n\nTarget:\n{Ex.TargetSite}\n\nSource:\n{Ex.Source}\n\nIf you see this message you very likely fell victim to a bug!\n\nPlease go to my issue tracker and report it, if it hasn't been done before.\nhttps://github.com/TrickyGameTools/TeddyBear/issues\n\nThank you!");
+#endif
+            }
         }
 
         static public void UpdateScreen(MouseState ms) {
+            try { 
             _mouse = ms;
             CurrentTool.Mouse(ms);
+            } catch (Exception Ex) {
+                ProjectData.Log($"Exception caught: {Ex.Message}\n{Ex.StackTrace}");
+#if TeddyUICrash
+                Crash.Error(ProjectData.Game, $"UUI-Flow Error:\n{Ex.Message}\n\nTraceback:\n{Ex.StackTrace}\n\nTarget:\n{Ex.TargetSite}\n\nSource:\n{Ex.Source}\n\nIf you see this message you very likely fell victim to a bug!\n\nPlease go to my issue tracker and report it, if it hasn't been done before.\nhttps://github.com/TrickyGameTools/TeddyBear/issues\n\nThank you!");
+#endif
+            }
         }
 
     }

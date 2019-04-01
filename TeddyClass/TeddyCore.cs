@@ -52,24 +52,16 @@ namespace TeddyBear{
 
 
         public byte Get(int x, int y) {
-
             if (x >= buf.GetLength(1) || y>=buf.GetLength(0)) Debug.WriteLine($"Get({x},{y}) ({buf.GetLength(1) - 1}x{buf.GetLength(0) - 1}) Out of bounds?");
-
             return buf[y, x];
-
+            //return 0;
         }
         public void Put(int x, int y, byte v) {
-
             try {
-
                 buf[y, x] = v;
-
                 Debug.WriteLine($"<map>.Put({x},{y},{v}); Done");
-
             } catch (Exception err) {
-
                 Debug.WriteLine($"<map>.Put({x},{y},{v}); Error:  {err.Message}  {W}x{H} ");
-
             }
 
         }
@@ -96,9 +88,7 @@ namespace TeddyBear{
     }
 
     class TeddyZoneName { // This is only to form a return value to the ZName method in the 'TeddyBear' method
-
         public string[] Name = new string[256];
-
     }
 
 
@@ -121,11 +111,8 @@ namespace TeddyBear{
         List<TeddyObject>[,] Objects;
 
         public List<TeddyObject> ObjectList(int x, int y) {
-
             if (Objects[x, y] == null) Objects[x, y] = new List<TeddyObject>();
-
             return Objects[x, y];
-
         }
 
         /// <summary>
@@ -169,22 +156,14 @@ namespace TeddyBear{
             return null;
         }
         /// <summary>
-
         /// Gives the stream for the draw driver to load the texture from.
-
         /// </summary>
-
         /// <param name="texturenum"></param>
-
         /// <returns>Returns the QuickStream object of this texture. If any sort of error occurs, null is returned.</returns>
         public QuickStream OpenTexture(byte texturenum, byte Endian=1) {
-
             if (texturenum == 0) return null;
-
             if (Texture[texturenum] == null || Texture[texturenum]=="") return null;
-
             return TextureDir.ReadFile(Texture[texturenum]);
-
         }
 
         static public TeddyMap Load(TJCRDIR MapDir, TJCRDIR TexDir, string Map) {
@@ -339,11 +318,8 @@ namespace TeddyBear{
             #region Layer Creation
             Debug.WriteLine($"Adding {layers.Length} layers to the new map");
             foreach (string lay in layers) {
-
                 Debug.WriteLine($"Creating layer: {lay}");
-
                 ret.NewLayer(lay, w, h);
-
             }
             #endregion
 
@@ -359,7 +335,6 @@ namespace TeddyBear{
 
 
         public void NewLayer(string name,int w,int h,int t=0) { Layers[name] = new TeddyLayer(w, h,t); }
-
         public void NewLayer(string name) => NewLayer(name, SizeX, SizeY);
         public void DelLayer(string name) => Layers.Remove(name); 
 

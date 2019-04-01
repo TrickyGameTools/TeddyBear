@@ -92,7 +92,7 @@ namespace TeddyBear {
                 BTE.WriteByte(2); BTE.WriteInt(map.SizeX); BTE.WriteInt(map.SizeY);
                 Log("\tWriting Textures");
                 for (byte Ak = 255; Ak > 0; Ak--) {
-                    Log($"\tWriting texture {Ak}");
+                    // Log($"\tWriting texture {Ak}"); // Needless to log all the time, but I used this line for debugging purposes.
                     if (map.Texture[Ak]!=null && map.Texture[Ak] != "") {
                         BTE.WriteByte(3);
                         BTE.WriteByte(Ak);
