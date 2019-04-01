@@ -25,7 +25,7 @@
 // EndLic
 
 
-
+#define TeddyCrashout
 
 
 
@@ -174,8 +174,15 @@ namespace TeddyEdit
             var mstate = Mouse.GetState();
             MX = mstate.X;
             MY = mstate.Y;
-
-            if (Current != null) Current.Update(this,gameTime, mstate, gpstate, kbstate);
+#if TeddyCrashout
+            try {
+#endif
+                if (Current != null) Current.Update(this,gameTime, mstate, gpstate, kbstate);
+#if TeddyCrashout
+            } catch (System.Exception ex) {
+                Crash.Error(this, $"U-Flow Error:\n{ex.Message}\n\nTraceback:\n{ex.StackTrace}\n\nTarget:\n{ex.TargetSite}\n\nSource:\n{ex.Source}\n\nIf you see this message you very likely fell victim to a bug!\n\nPlease go to my issue tracker and report it, if it hasn't been done before.\nhttps://github.com/TrickyGameTools/TeddyBear/issues\n\nThank you!");
+            }
+#endif
             base.Update(gameTime);
         }
 
@@ -195,7 +202,15 @@ namespace TeddyEdit
         {
             GraphicsDevice.Clear(Color.Black);
             SB.Begin();
-            if (Current != null) Current.Draw(this, gameTime);
+#if TeddyCrashout
+            try {
+#endif
+                if (Current != null) Current.Draw(this, gameTime);
+#if TeddyCrashout
+            } catch (System.Exception ex) {
+                Crash.Error(this,$"D-Flow Error:\n{ex.Message}\n\nTraceback:\n{ex.StackTrace}\n\nTarget:\n{ex.TargetSite}\n\nSource:\n{ex.Source}\n\nIf you see this message you very likely fell victim to a bug!\n\nPlease go to my issue tracker and report it, if it hasn't been done before.\nhttps://github.com/TrickyGameTools/TeddyBear/issues\n\nThank you!");
+            }
+#endif
             DrawTex(MousePointer, MX, MY);            
             SB.End();
 
