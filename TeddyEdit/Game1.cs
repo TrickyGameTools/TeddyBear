@@ -201,7 +201,8 @@ namespace TeddyEdit
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            SB.Begin();
+            //SB.Begin();
+            SB.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null);
 #if TeddyCrashout
             try {
 #endif

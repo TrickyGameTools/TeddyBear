@@ -91,6 +91,8 @@ namespace TeddyEdit {
         }
         #endregion
 
+        const int EditStartY = 30;
+
         static SortedDictionary<PDMEN, string> PDM_Bar = new SortedDictionary<PDMEN, string>();
         static SortedDictionary<PDMEN, TQMGText> PDM_Caption = new SortedDictionary<PDMEN, TQMGText>();
         static public TQMGFont font12 { get; private set; }
@@ -249,7 +251,7 @@ namespace TeddyEdit {
         static public void DrawPDMenu()  {
             int x = 10;
             TQMG.Color(255, 255, 255);
-            TQMG.UglyTile(back, 0, 0, ProjectData.Game.Window.ClientBounds.Width, 15);
+            TQMG.SimpleTile(back, 0, 0, ProjectData.Game.Window.ClientBounds.Width, EditStartY);
             foreach(PDMEN i in PDM_Caption.Keys) {
                 PDM_Caption[i].Draw(x, 5);
                 x += 20 + PDM_Caption[i].Width;
@@ -262,7 +264,7 @@ namespace TeddyEdit {
             var ToolWidth = back.Width + ScrMod;
             TQMG.Color(255, 255, 255);
             ToolX = ScrWidth - ToolWidth;
-            TQMG.UglyTile(back,ToolX, back.Height, ToolWidth, ScrHeight);
+            TQMG.UglyTile(back,ToolX, EditStartY, ToolWidth, ScrHeight);
             //font20.DrawText($"{ToolX}/{back.Width}x{back.Height}/{ToolWidth}/{ScrWidth}x{ScrHeight}/{ScrMod}",ToolX,100,TQMG_TextAlign.Right); // debug line!
             foreach(ToolKind tool in Tools) {
                 tool.Icon.Draw(ToolX + tool.x, 50);
@@ -291,7 +293,7 @@ namespace TeddyEdit {
         }
 
         static public void DrawMap(MouseState mouse) {
-            const int mapy = 25;
+            const int mapy = EditStartY;
             foreach(string lay in LayerList) {
                 TeddyDraw.DrawLayer(ProjectData.Map,lay,0,mapy,ScrollX,ScrollY);
             }

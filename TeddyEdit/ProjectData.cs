@@ -56,6 +56,8 @@ namespace TeddyEdit
         static Dictionary<TexAllow, string> AllowCode2String = new Dictionary<TexAllow, string>();
         static void Save() {
             scrollcount = 1000;
+            ProjectData.Log($"Saving mapconfig: {ProjectData.MapConfigFile}");
+            Directory.CreateDirectory(qstr.ExtractDir(ProjectData.MapConfigFile));
             GINI.SaveSource(ProjectData.MapConfigFile);
         }
 
@@ -89,6 +91,7 @@ namespace TeddyEdit
 
         // Set the allow setting (and thanks to overloading we can give both functions the same name).
         static public void Allow (string Tex, string Lay, TexAllow a) {
+            ProjectData.Log($"Modifying allowance for texture\"{Tex}\" on layer {Lay} to {a}");
             GINI.D($"ALLOW.{Tex}.{Lay}", AllowCode2String[a]);
             Save();
         }
@@ -181,10 +184,10 @@ namespace TeddyEdit
                 // This settings file is only for the benefit of this editor, and it would be pointless to keep in the game.
                 // Maybe not very useful for when you plan to use exporters, but for TeddyBear's primary setup essential.
                 // Also these settings are NOT compatible with the old TeddyBear, sorry!
-                MapConfigFile = $"{WorkSpace}/{Project}/{Project}/MapSettings/{qstr.StripDir(value)}.GINI";
+                MapConfigFile = $"{WorkSpace}/{Project}/MapSettings/{qstr.StripDir(value)}.Settings.GINI";
                 Directory.CreateDirectory(qstr.ExtractDir(MapConfigFile));
-                if (File.Exists($"{MapConfigFile}.Settings.GINI"))
-                    MapConfigGINI = GINI.ReadFromFile($"{MapConfigFile}.GINI");
+                if (File.Exists($"{MapConfigFile}"))
+                    MapConfigGINI = GINI.ReadFromFile($"{MapConfigFile}");
                 else
                     MapConfigGINI = new TGINI();            
             }
