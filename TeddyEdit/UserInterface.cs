@@ -138,7 +138,7 @@ namespace TeddyEdit {
         static public int ScrollX { get => MapConfig.ScrollX; set => MapConfig.ScrollX = value; }
         static public int ScrollY { get => MapConfig.ScrollY; set => MapConfig.ScrollY = value; }
         static public int PosX => (int)Math.Floor((decimal)((float)(_mouse.X + ScrollX) / (float)Map.GridX));
-        static public int PosY => (int)Math.Floor((decimal)((float)((_mouse.Y-back.Height) + ScrollY) / (float)Map.GridY));
+        static public int PosY => (int)Math.Floor((decimal)((float)((_mouse.Y-EditStartY) + ScrollY) / (float)Map.GridY));
         #endregion
 
         static UI() {
