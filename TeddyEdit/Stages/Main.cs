@@ -32,6 +32,7 @@
 
 
 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +61,7 @@ namespace TeddyEdit.Stages {
             MS = mouse;            
             if (kb.IsKeyDown(Keys.LeftControl)) {
                 if (kb.IsKeyDown(Keys.G)) MapConfig.ShowGrid = !MapConfig.ShowGrid;
+                if (kb.IsKeyDown(Keys.M)) Meta.ComeToMe();
                 if (kb.IsKeyDown(Keys.O)) SetAllowance.ComeToMe(CurTexSpot);
                 if (kb.IsKeyDown(Keys.T) && CurTexSpot > 0)
                     TextureLoad.ComeToMe(CurTexSpot);
