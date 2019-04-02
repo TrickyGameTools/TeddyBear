@@ -24,14 +24,9 @@
 // Version: 19.04.02
 // EndLic
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using TeddyBear;
 using TrickyUnits;
 
 namespace TeddyEdit.Stages
