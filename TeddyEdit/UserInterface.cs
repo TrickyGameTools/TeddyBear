@@ -348,7 +348,7 @@ namespace TeddyEdit {
                 if (PosY == startY) { sy = PosY; ey = PosY; } else if (PosY < startY) { sy = PosY; ey = startY; } else { sy = startY; ey = PosY; }
                 TQMG.SetAlpha(25);
                 TQMG.Color(255, 0, 0);
-                TQMG.DrawRectangle((sx*gx)-ScrollX, (sy*gy)-ScrollY, ((ex - sx)*gx)-ScrollX, ((ey - sy)*gy)-ScrollY);
+                TQMG.DrawRectangle((sx*gx)-ScrollX, ((sy*gy)-ScrollY)+EditStartY, (((ex+1) - sx)*gx)-ScrollX, (((ey+1) - sy)*gy)-ScrollY);
                 TQMG.SetAlpha(255);
                 if (mouse.LeftButton != ButtonState.Pressed) {
                     if (CurrentTool.Name == "Layers") {
