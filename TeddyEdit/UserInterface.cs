@@ -292,8 +292,25 @@ namespace TeddyEdit {
             }
         }
 
+        static public void DrawGrid(MouseState mouse) {
+            bool bc;
+            bool ac = true;
+            for(int y = 0; y < ScrHeight; y += Map.GridY) {
+                ac = !ac;
+                bc = ac;
+                for (int x=0; x<=ToolX; x += Map.GridX) {
+                    // The numbers in the for loop defs above will draw a bit more than needed, but this way I can be 100% sure no bugs occur!
+                    bc = !bc;
+                    MapConfig.GridCol(bc);
+                    TQMG.DrawRectangle(x, y + EditStartY, Map.GridX, Map.GridY);
+                }
+            }
+        }
+
         static public void DrawMap(MouseState mouse) {
             const int mapy = EditStartY;
+            if (MapConfig.ShowGrid) DrawGrid(mouse);
+            TQMG.Color(255, 255, 255);
             foreach(string lay in LayerList) {
                 TeddyDraw.DrawLayer(ProjectData.Map,lay,0,mapy,ScrollX,ScrollY);
             }

@@ -58,6 +58,8 @@ namespace TeddyEdit.Stages {
         public override void Update(Game1 game, GameTime gameTime, MouseState mouse, GamePadState gamepad, KeyboardState kb) {
             MS = mouse;            
             if (kb.IsKeyDown(Keys.LeftControl)) {
+                if (kb.IsKeyDown(Keys.G)) MapConfig.ShowGrid = !MapConfig.ShowGrid;
+                if (kb.IsKeyDown(Keys.O)) SetAllowance.ComeToMe(CurTexSpot);
                 if (kb.IsKeyDown(Keys.T) && CurTexSpot > 0)
                     TextureLoad.ComeToMe(CurTexSpot);
                 if (kb.IsKeyDown(Keys.S)) SaveMap();
@@ -65,7 +67,6 @@ namespace TeddyEdit.Stages {
                 if (kb.IsKeyDown(Keys.Up) && UI.ScrollY > 0) { UI.ScrollY -= ProjectData.Map.GridY / 2; if (UI.ScrollY < 0) UI.ScrollY = 0; }
                 if (kb.IsKeyDown(Keys.Down)) UI.ScrollY += ProjectData.Map.GridY / 2;
                 if (kb.IsKeyDown(Keys.Right)) UI.ScrollX += ProjectData.Map.GridX / 2;
-                if (kb.IsKeyDown(Keys.O)) SetAllowance.ComeToMe(CurTexSpot);
             }
             UI.UpdateScreen(mouse); // for buttons on the interface
         }

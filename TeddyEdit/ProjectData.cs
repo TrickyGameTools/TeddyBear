@@ -76,6 +76,30 @@ namespace TeddyEdit
             }
         }
 
+        static public bool ShowGrid {
+            get => GINI.C("ShowGrid") != "FALSE";
+            set {
+                switch (value) {
+                    case true:
+                        GINI.D("ShowGrid", "TRUE");
+                        break;
+                    case false:
+                        GINI.D("ShowGrid", "FALSE");
+                        break;
+                }
+                Save();
+            }            
+        }
+
+        static public void GridCol(bool b) {
+            if (GINI.C($"GRIDCOL{b}") == "") {
+                if (b) GINI.D($"GRIDCOL{b}", "10,7,0"); else GINI.D($"GRIDCOL{b}", "0,7,10");
+            }
+            var s = GINI.C($"GRIDCOL{b}").Split(',');
+            if (s.Length < 3) Crash.Error(ProjectData.Game, $"Syntax error in GRIDCODL{b} definition!   {GINI.C($"GRIDCOL{b}")}");
+            TQMG.Color((byte)qstr.ToInt(s[0]), (byte)qstr.ToInt(s[1]), (byte)qstr.ToInt(s[2]));
+        }
+
 
         // Get the allow setting
         static public TexAllow Allow(string Tex, string Lay) {
