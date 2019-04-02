@@ -1,7 +1,7 @@
 // Lic:
 // TeddyClass/TeddyDraw_MonoGame.cs
 // TeddyBear C#
-// version: 19.03.31
+// version: 19.04.02
 // Copyright (C)  Jeroen P. Broks
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -18,17 +18,20 @@
 // 3. This notice may not be removed or altered from any source distribution.
 // EndLic
 
+
 #undef donttry
 
 using TrickyUnits;
 
 // MonoGame class
 namespace TeddyBear
+
 {
 
     delegate void TDMGLog(string msg);
 
     static class TeddyDraw_MonoGame
+
     {
         static TQMGImage Unknown;
         static TQMGImage[] Texture = new TQMGImage[256];
@@ -40,8 +43,8 @@ namespace TeddyBear
         public static void Init()
         {
             Error = "";
-            MKL.Version("TeddyBear - TeddyDraw_MonoGame.cs", "19.03.31");
-            MKL.Lic("TeddyBear - TeddyDraw_MonoGame.cs", "ZLib License");
+            MKL.Version("TeddyBear - TeddyDraw_MonoGame.cs","19.04.02");
+            MKL.Lic    ("TeddyBear - TeddyDraw_MonoGame.cs","ZLib License");
             // This item will allow MonoGame to draw tiles in the map
             TeddyDraw.DrawTileItem = delegate (TeddyMap map, string layer, int screenstart_x, int screenstart_y, int scroll_x, int scroll_y, int posx, int posy)
             {
@@ -53,6 +56,7 @@ namespace TeddyBear
                 if (b == 0) return; // 0 stands for nothing and should therefore always be ignored!
                 if (map.Texture[b] == null || map.Texture[b] == "") { Texture[b] = Unknown; Log($"No texture set on {b}"); }
                 if (Texture[b] == null) {
+
 #if !donttry
                     try {
 #endif
@@ -60,17 +64,22 @@ namespace TeddyBear
                         var bt = map.OpenTexture(b);
                         if (bt == null) { Texture[b] = Unknown; Log($"JCR6 failed to open the texture file! {UseJCR6.JCR6.JERROR}"); return; }
                         Texture[b] = TQMG.GetImage(bt);
+
                         if (Texture[b] == null) { Texture[b] = Unknown; Log($"Texture load failed! {map.Texture[b]}"); } else { Log("Texture appears to be loaded succesfully!"); }
+
 #if !donttry
                     } catch (System.Exception er) {
+
                         Log($"An error happened when loading a texture: {er.Message} >> {er.StackTrace}");
                         Texture[b] = Unknown;
+
                     }
 #endif
                 }
 
                 if (Texture[b] != null) {
                     Texture[b].Draw((screenstart_x + (posx * map.GridX)) - scroll_x, (screenstart_y + (posy * map.GridY)) - scroll_y);
+
                 }
 
             };
