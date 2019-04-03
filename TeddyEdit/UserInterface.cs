@@ -94,9 +94,35 @@ namespace TeddyEdit {
         #endregion
 
         const int EditStartY = 30;
+        #region Declarations Pull Down Menus
+        class PDM_Item {
+            readonly public PDMEN Parent;
+            readonly public string CaptString;
+            readonly public TQMGText CaptText;
+            readonly public string qkeyString;
+            readonly public TQMGText qkeyText;
+            readonly public int MenuEventCode;
+            public bool Enabled = true;
+
+            PDM_Item(PDMEN aParent, string Caption, int EventCode, string qkey) {
+                PDM_Items[aParent].Add(this);
+                Parent = aParent;
+                CaptString = Caption;
+                CaptText = font20.Text(Caption);
+                qkeyString = qkey;
+                qkeyText = font20.Text(qkey);
+                MenuEventCode = EventCode;
+            }
+
+            public static PDM_Item New(PDMEN Parent, string Caption, int EventCode,string qkey="") => new PDM_Item(Parent, Caption, EventCode,qkey);
+            
+        }
 
         static SortedDictionary<PDMEN, string> PDM_Bar = new SortedDictionary<PDMEN, string>();
         static SortedDictionary<PDMEN, TQMGText> PDM_Caption = new SortedDictionary<PDMEN, TQMGText>();
+        static SortedDictionary<PDMEN, List<PDM_Item>> PDM_Items;
+        #endregion
+
         static public TQMGFont font12 { get; private set; }
         static public TQMGFont font20 { get; private set; }
         static public TQMGFont font32 { get; private set; }
@@ -151,20 +177,37 @@ namespace TeddyEdit {
 
             MKL.Version("TeddyBear - UserInterface.cs", "19.04.03");
             MKL.Lic("TeddyBear - UserInterface.cs", "GNU General Public License 3");
-            PDM_Bar[PDMEN.File] = "File";
-            PDM_Bar[PDMEN.Textures] = "Textures";
-            PDM_Bar[PDMEN.Objects] = "Objects";
-#if supportscript
-            PDM_Bar[PDMEN.Script] = "Script"
-#endif
+
             #region load fonts
             font12 = TQMG.GetFont("fonts/SulphurPoint-Regular.12.jfbf");
             font20 = TQMG.GetFont("fonts/SulphurPoint-Regular.20.jfbf");
             font32 = TQMG.GetFont("fonts/SulphurPoint-Regular.32.jfbf");
             #endregion
 
-            TxNULL = font32.Text("<NULL>");
+            #region Define Pull-Down menus
+            try {
+                PDM_Items = new SortedDictionary<PDMEN, List<PDM_Item>>();
+                PDM_Bar[PDMEN.File] = "File"; PDM_Items[PDMEN.File] = new List<PDM_Item>();
+                PDM_Item.New(PDMEN.File, "Edit Meta Data Data", 1001, "^M");
+                PDM_Item.New(PDMEN.File, "Save", 1002, "^S");
+                PDM_Item.New(PDMEN.File, "Quit", 1003, "^Q");
+                PDM_Bar[PDMEN.Textures] = "Textures"; PDM_Items[PDMEN.Textures] = new List<PDM_Item>();
+                PDM_Item.New(PDMEN.Textures, "Load Texture", 2001, "^T");
+                PDM_Item.New(PDMEN.Textures, "All Textures", 2002, "^R");
+                PDM_Item.New(PDMEN.Textures, "Remove Texture", 2003, "^D");
+                PDM_Item.New(PDMEN.Textures, "Texture Allowance", 2004, "^O");
+                PDM_Bar[PDMEN.Objects] = "Objects"; PDM_Items[PDMEN.Objects] = new List<PDM_Item>();
+#if supportscript
+            PDM_Bar[PDMEN.Script] = "Script"
+#endif
+            } catch (Exception E) {
+                Crash.Error(ProjectData.Game, $"{E.Message}\n\n{E.StackTrace}");
+            }
             foreach (PDMEN i in PDM_Bar.Keys) PDM_Caption[i] = font20.Text(PDM_Bar[i]);
+            #endregion
+
+
+            TxNULL = font32.Text("<NULL>");
             back = TQMG.GetImage("metal.jpg");
             ProjectAndFile = font20.Text($"Project: {ProjectData.Project}; Map: {ProjectData.MapFile}");
             ArrowUp = TQMG.GetImage("Arrow_Up.png");
