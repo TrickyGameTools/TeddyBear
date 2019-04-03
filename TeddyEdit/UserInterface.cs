@@ -124,6 +124,10 @@ namespace TeddyEdit {
         static SortedDictionary<PDMEN, List<PDM_Item>> PDM_Items;
         static Dictionary<PDMEN, int> PDM_Width = new Dictionary<PDMEN, int>();
         static Dictionary<PDMEN, int> PDM_Height = new Dictionary<PDMEN, int>();
+        static private int TrueMenuEvent=0;
+        static public int MenuEvent { get { var r = TrueMenuEvent; TrueMenuEvent = 0; return r; } }
+        static public bool DontMouse = false;
+
         #endregion
 
         static public TQMGFont font12 { get; private set; }
@@ -383,11 +387,23 @@ namespace TeddyEdit {
                     var w = PDM_Width[i];
                     foreach(PDM_Item item in PDM_Items[i]) {
                         TQMG.Color(255, 255, 255);
+                        if (mouse.X>x && mouse.X<x+w && mouse.Y>y && mouse.Y < y + 21) {
+                            TQMG.Color(20, 15, 0);
+                            TQMG.SetAlpha(20);
+                            TQMG.DrawRectangle(x, y, w, 22);
+                            TQMG.SetAlpha(255);
+                            TQMG.Color(255, 180, 0);
+                            if (mouse.LeftButton == ButtonState.Pressed) {
+                                MenuOpen = false;
+                                TrueMenuEvent = item.MenuEventCode;
+                                DontMouse = true;
+                            }
+                        }
                         item.CaptText.Draw(x + 5, y);
                         item.qkeyText.Draw((x + w) - 5, y, TQMG_TextAlign.Right);
                         y += 22;
                     }
-                    if (mouse.LeftButton == ButtonState.Pressed && (mouse.X < x || mouse.X > x + w || mouse.Y > EditStartY + PDM_Height[i])) MenuOpen = false;
+                    if (mouse.LeftButton == ButtonState.Pressed && (mouse.X < x || mouse.X > x + w || mouse.Y > EditStartY + PDM_Height[i])) { MenuOpen = false; DontMouse = true; }
                 } else if (mouse.LeftButton==ButtonState.Pressed && mouse.Y<EditStartY && mouse.X>x && mouse.X<x+20+PDM_Caption[i].Width) {
                     MenuOpen = true;
                     MenuPulled = i;
@@ -497,7 +513,7 @@ namespace TeddyEdit {
             }
             if (CurrentTool.Name == "Zones" && CurrentZone != null) DrawZone(CurrentZone);
             if (mouse.Y < mapy || mouse.X > ToolX) startX = -1;
-            else if ((!MenuOpen) && mouse.LeftButton==ButtonState.Pressed && startX<0 && CurrentTool.boxdraw) {
+            else if ((!MenuOpen) && TrueMenuEvent==0 && mouse.LeftButton==ButtonState.Pressed && startX<0 && CurrentTool.boxdraw) {
                 /* BAAAAAD!
                 startX = ScrollX + mouse.X; startY = ScrollY + mouse.Y;
                 */
@@ -579,8 +595,10 @@ namespace TeddyEdit {
             }
         }
 
-        static public void DrawScreen(MouseState ms) {
+        static public void DrawScreen(MouseState ams) {
             try {
+                var ms = ams;
+                if (DontMouse) ms = new MouseState(ams.X, ams.Y, 0, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released);
                 DrawMap(ms);
                 DrawToolBox(ms); // Toolbox MUST come BEFORE pull down menu and status bar (conflict prevention)
                 DrawPDMenu(ms);
@@ -594,9 +612,11 @@ namespace TeddyEdit {
         }
 
         static public void UpdateScreen(MouseState ms) {
-            try { 
-            _mouse = ms;
-            CurrentTool.Mouse(ms);
+            try {
+                if (ms.LeftButton == ButtonState.Released) DontMouse = false;
+                if (DontMouse) _mouse = new MouseState(ms.X, ms.Y, 0, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released);
+                _mouse = ms;
+                CurrentTool.Mouse(_mouse);
             } catch (Exception Ex) {
                 ProjectData.Log($"Exception caught: {Ex.Message}\n{Ex.StackTrace}");
 #if TeddyUICrash
