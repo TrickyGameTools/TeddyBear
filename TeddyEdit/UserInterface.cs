@@ -121,6 +121,7 @@ namespace TeddyEdit {
         static SortedDictionary<PDMEN, string> PDM_Bar = new SortedDictionary<PDMEN, string>();
         static SortedDictionary<PDMEN, TQMGText> PDM_Caption = new SortedDictionary<PDMEN, TQMGText>();
         static SortedDictionary<PDMEN, List<PDM_Item>> PDM_Items;
+        static Dictionary<PDMEN, int> PDM_Width = new Dictionary<PDMEN, int>();
         #endregion
 
         static public TQMGFont font12 { get; private set; }
@@ -203,7 +204,15 @@ namespace TeddyEdit {
             } catch (Exception E) {
                 Crash.Error(ProjectData.Game, $"{E.Message}\n\n{E.StackTrace}");
             }
-            foreach (PDMEN i in PDM_Bar.Keys) PDM_Caption[i] = font20.Text(PDM_Bar[i]);
+            foreach (PDMEN i in PDM_Bar.Keys) {
+                PDM_Caption[i] = font20.Text(PDM_Bar[i]);
+                var w = 0;
+                foreach(PDM_Item item in PDM_Items[i]) {
+                    var wd = item.CaptText.Width + 40 + item.qkeyText.Width;
+                    if (wd > w) w = wd;
+                }
+                PDM_Width[i] = w;
+            }
             #endregion
 
 
