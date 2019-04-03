@@ -59,7 +59,8 @@ namespace TeddyEdit.Stages {
         }
 
         public override void Update(Game1 game, GameTime gameTime, MouseState mouse, GamePadState gamepad, KeyboardState kb) {
-            MS = mouse;            
+            MS = mouse;
+            TQMGKey.Start(kb);
             if (kb.IsKeyDown(Keys.LeftControl)) {
                 if (kb.IsKeyDown(Keys.G)) MapConfig.ShowGrid = !MapConfig.ShowGrid;
                 if (kb.IsKeyDown(Keys.M)) Meta.ComeToMe();

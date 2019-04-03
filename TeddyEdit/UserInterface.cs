@@ -25,8 +25,6 @@
 // EndLic
 
 
-
-
 #define TeddyUICrash
 #undef supportscript
 
@@ -62,7 +60,7 @@ namespace TeddyEdit {
         }
     }
 
-    
+
     static class UI {
 
         #region Classes and void pointers (delegates) for the tool box
@@ -70,14 +68,15 @@ namespace TeddyEdit {
         delegate void ToolDraw(MouseState ms);
 
         class ToolKind {
-            TQMGImage _icon=null;
+            TQMGImage _icon = null;
             public TQMGImage Icon { get {
-                    if (_icon==null) _icon = TQMG.GetImage($"Tool_{Name}.png");
+                    if (_icon == null) _icon = TQMG.GetImage($"Tool_{Name}.png");
                     if (_icon == null) throw new Exception($"UI.GetIcon(\"{Name}\"): {JCR6.JERROR}");
                     return _icon;
                 }
             }
             public bool selected = false;
+            public bool boxdraw = true;
             readonly public int x;
             readonly public string Name;
             readonly public ToolDraw Draw;
@@ -88,7 +87,7 @@ namespace TeddyEdit {
                 x = getx;
                 Name = getname;
                 Draw = getdraw;
-                Mouse = getmouse;                
+                Mouse = getmouse;
                 // TODO: Load the icon
             }
         }
@@ -108,7 +107,7 @@ namespace TeddyEdit {
         static TQMGText ProjectAndFile;
         static public TQMGImage ArrowUp { get; private set; }
         static public TQMGImage ArrowDn { get; private set; }
-        static public TQMGImage ArrowDown => ArrowDn;        
+        static public TQMGImage ArrowDown => ArrowDn;
         static int TexSpot { get => Main.CurTexSpot; set { Main.CurTexSpot = value; } }
 
         #region Layer data
@@ -116,6 +115,11 @@ namespace TeddyEdit {
         static public TQMGText[] LayerText { get; private set; }
         static bool[] LayerVisible;
         static string CurrentLayer;
+        static string CurrentZone;
+        static string czonename {
+            get => ProjectData.Map.ZName(CurrentZone).Name[TexSpot];
+            set => ProjectData.Map.ZName(CurrentZone).Name[TexSpot] = value;
+        }
         #endregion
 
         static public int ScrWidth => ProjectData.Game.Window.ClientBounds.Width;
@@ -140,13 +144,13 @@ namespace TeddyEdit {
         static public int ScrollX { get => MapConfig.ScrollX; set => MapConfig.ScrollX = value; }
         static public int ScrollY { get => MapConfig.ScrollY; set => MapConfig.ScrollY = value; }
         static public int PosX => (int)Math.Floor((decimal)((float)(_mouse.X + ScrollX) / (float)Map.GridX));
-        static public int PosY => (int)Math.Floor((decimal)((float)((_mouse.Y-EditStartY) + ScrollY) / (float)Map.GridY));
+        static public int PosY => (int)Math.Floor((decimal)((float)((_mouse.Y - EditStartY) + ScrollY) / (float)Map.GridY));
         #endregion
 
         static UI() {
-            
-            MKL.Version("TeddyBear - UserInterface.cs","19.04.03");
-            MKL.Lic    ("TeddyBear - UserInterface.cs","GNU General Public License 3");
+
+            MKL.Version("TeddyBear - UserInterface.cs", "19.04.03");
+            MKL.Lic("TeddyBear - UserInterface.cs", "GNU General Public License 3");
             PDM_Bar[PDMEN.File] = "File";
             PDM_Bar[PDMEN.Textures] = "Textures";
             PDM_Bar[PDMEN.Objects] = "Objects";
@@ -177,12 +181,12 @@ namespace TeddyEdit {
             CurrentLayer = LayerList[0];
 
             #region Create the tools
-            void NewTool(string name,ToolDraw draw, ToolMouse mouse) {
-                Tools.Add( new ToolKind(Tools.Count*65,name,draw,mouse) );                
+            void NewTool(string name, ToolDraw draw, ToolMouse mouse) {
+                Tools.Add(new ToolKind(Tools.Count * 65, name, draw, mouse));
             }
             NewTool("Layers", Tool_Layers, Tool_LayersUpdate);
             NewTool("Objects", delegate { font20.DrawText("Objects not yet implemented", ToolX, 200); }, delegate { });
-            NewTool("Zones", Tool_Zones, delegate { });
+            NewTool("Zones", Tool_Zones, Tool_ZonesUpdate);
             NewTool("Script", delegate { font20.DrawText("Script not yet implemented", ToolX, 200); }, delegate { }); // TODO: Script
             ToolButton[false] = TQMG.GetImage("toolbutton_0.png");
             ToolButton[true] = TQMG.GetImage("toolbutton_1.png");
@@ -196,10 +200,10 @@ namespace TeddyEdit {
             if (mouse.X > ToolX && mouse.X < ToolX + 32 && mouse.Y > 150 && mouse.Y < 182) TQMG.Color(180, 0, 255);
             ArrowUp.Draw(ToolX, 150);
             TQMG.Color(0, 180, 255);
-            if (mouse.X > ToolX+40 && mouse.X < ToolX + 72 && mouse.Y > 150 && mouse.Y < 182) TQMG.Color(180, 0, 255);
+            if (mouse.X > ToolX + 40 && mouse.X < ToolX + 72 && mouse.Y > 150 && mouse.Y < 182) TQMG.Color(180, 0, 255);
             ArrowDn.Draw(ToolX + 40, 150);
             TQMG.Color(255, 180, 0);
-            font32.DrawText(TexSpot.ToString("X2"),ToolX + 80, 150);
+            font32.DrawText(TexSpot.ToString("X2"), ToolX + 80, 150);
             if (TexSpot == 0) {
                 TQMG.Color(255, 0, 0);
                 TxNULL.Draw(ToolX + 200, 150);
@@ -208,11 +212,11 @@ namespace TeddyEdit {
                 var texfil = Map.Texture[TexSpot];
                 if (texfil == null) texfil = "";
                 var texdirs = texfil.Split('/');
-                if (texdirs.Length>7) {
+                if (texdirs.Length > 7) {
                     var y = (172 + 16) - (12 * 7);
-                    for (int i=0;i<texdirs.Length;i++) {
+                    for (int i = 0; i < texdirs.Length; i++) {
                         if (i < 3 || i < texdirs.Length - 4) {
-                            font12.DrawText(texdirs[i],ToolX+110,y);
+                            font12.DrawText(texdirs[i], ToolX + 110, y);
                             y += 12;
                         } else if (i == 3) {
                             font12.DrawText("   <=====> ", ToolX + 110, y);
@@ -227,8 +231,8 @@ namespace TeddyEdit {
                     }
                 }
             }
-            for(int i=0; i < LayerList.Length; i++) {
-                if (!qstr.Prefixed(LayerList[i].ToUpper(), "ZONE_")) {
+            for (int i = 0; i < LayerList.Length; i++) {
+                if (!qstr.Prefixed(LayerList[i], "Zone_")) {
                     int PosY = 210 + (i * 21);
                     TQMG.Color(255, 255, 255);
                     if (LayerVisible[i]) { Visible.Draw(ToolX + 5, PosY); }
@@ -245,10 +249,10 @@ namespace TeddyEdit {
             Tool_LastMouse = mouse;
         }
 
-        static void Tool_LayersUpdate(MouseState mouse)  {
+        static void Tool_LayersUpdate(MouseState mouse) {
             if (mouse.Y > 150 && mouse.Y < 182 && !ArrowWasPressed && mouse.LeftButton == ButtonState.Pressed && !MenuOpen) {
                 if (mouse.X > ToolX && mouse.X < ToolX + 32 && TexSpot > 0) TexSpot--;
-                if (mouse.X > ToolX+40 && mouse.X < ToolX + 72 && TexSpot < 255) TexSpot++;
+                if (mouse.X > ToolX + 40 && mouse.X < ToolX + 72 && TexSpot < 255) TexSpot++;
             }
             ArrowWasPressed = mouse.LeftButton == ButtonState.Pressed;
         }
@@ -263,18 +267,49 @@ namespace TeddyEdit {
             ArrowDn.Draw(ToolX + 40, 150);
             TQMG.Color(255, 180, 0);
             font32.DrawText(TexSpot.ToString("X2"), ToolX + 80, 150);
-            if (TexSpot == 0) {
+            if (TexSpot == 0 || CurrentZone == null) {
                 TQMG.Color(255, 0, 0);
                 TxNULL.Draw(ToolX + 200, 150);
-            } else {
+            } else if (CurrentZone != null) {
+                TQMG.Color(180, 255, 0);
+                font12.DrawText($"{czonename}|", ToolX + 120, 150);
+            }
+            var y = 200;
+            foreach (string z in LayerList) {
+                if (qstr.Prefixed(z, "Zone_")) {
+                    if (CurrentZone == null) CurrentZone = z;
+                    if (CurrentZone == z)
+                        TQMG.Color(255, 180, 0);
+                    else
+                        TQMG.Color(255, 255, 255);
+                    font20.DrawText(z, ToolX + 5, y);
+                    if (mouse.LeftButton == ButtonState.Pressed && !MenuOpen && mouse.X > ToolX && mouse.Y > y && mouse.Y < y + 20)
+                        CurrentZone = z;
+                    y += 23;
+                }
             }
         }
 
-        static public void DrawPDMenu()  {
+        static void Tool_ZonesUpdate(MouseState mouse)
+        {
+            if (mouse.Y > 150 && mouse.Y < 182 && !ArrowWasPressed && mouse.LeftButton == ButtonState.Pressed && !MenuOpen) {
+                if (mouse.X > ToolX && mouse.X < ToolX + 32 && TexSpot > 0) TexSpot--;
+                if (mouse.X > ToolX + 40 && mouse.X < ToolX + 72 && TexSpot < 255) TexSpot++;
+            }
+            ArrowWasPressed = mouse.LeftButton == ButtonState.Pressed;
+            if (!(MenuOpen || TQMGKey.Held(Keys.LeftControl) || TQMGKey.Held(Keys.RightControl))) {
+                var ch = TQMGKey.GetChar();
+                if ((byte)ch >= 32 && font12.TextWidth(czonename) < (ScrWidth - (ToolX + 130))) czonename += ch;
+                if (TQMGKey.Hit(Keys.Back) && czonename != "") czonename = qstr.Left(czonename, czonename.Length - 1);
+            }
+        }
+
+
+        static public void DrawPDMenu() {
             int x = 10;
             TQMG.Color(255, 255, 255);
             TQMG.SimpleTile(back, 0, 0, ProjectData.Game.Window.ClientBounds.Width, EditStartY);
-            foreach(PDMEN i in PDM_Caption.Keys) {
+            foreach (PDMEN i in PDM_Caption.Keys) {
                 PDM_Caption[i].Draw(x, 5);
                 x += 20 + PDM_Caption[i].Width;
             }
@@ -286,14 +321,14 @@ namespace TeddyEdit {
             var ToolWidth = back.Width + ScrMod;
             TQMG.Color(255, 255, 255);
             ToolX = ScrWidth - ToolWidth;
-            TQMG.UglyTile(back,ToolX, EditStartY, ToolWidth, ScrHeight);
+            TQMG.UglyTile(back, ToolX, EditStartY, ToolWidth, ScrHeight);
             //font20.DrawText($"{ToolX}/{back.Width}x{back.Height}/{ToolWidth}/{ScrWidth}x{ScrHeight}/{ScrMod}",ToolX,100,TQMG_TextAlign.Right); // debug line!
-            foreach(ToolKind tool in Tools) {
+            foreach (ToolKind tool in Tools) {
                 tool.Icon.Draw(ToolX + tool.x, 50);
                 ToolButton[tool.selected].Draw(ToolX + tool.x, 50);
                 #region Dirty code straight from Hell, but I don't care!
-                if (mouse.X>tool.x+ToolX && mouse.Y>50 && mouse.Y < 114 && mouse.LeftButton==ButtonState.Pressed && !MenuOpen) {
-                    foreach(ToolKind ModToolTab in Tools) {
+                if (mouse.X > tool.x + ToolX && mouse.Y > 50 && mouse.Y < 114 && mouse.LeftButton == ButtonState.Pressed && !MenuOpen) {
+                    foreach (ToolKind ModToolTab in Tools) {
                         ModToolTab.selected = ModToolTab == tool; // Yeah, this must have the same reference!!!
                         if (ModToolTab.selected) CurrentTool = ModToolTab;
                     }
@@ -307,7 +342,7 @@ namespace TeddyEdit {
         {
             for (int ix = sx; ix <= ex; ix++) {
                 for (int iy = sy; iy <= ey; iy++) {
-                    if (ix<=ProjectData.MapWidth && ix>=0 && iy>=0 && iy <= ProjectData.MapHeight) {
+                    if (ix <= ProjectData.MapWidth && ix >= 0 && iy >= 0 && iy <= ProjectData.MapHeight) {
                         Map.Layers[Layer].Put(ix, iy, (byte)TexSpot);
                     }
                 }
@@ -317,14 +352,57 @@ namespace TeddyEdit {
         static public void DrawGrid(MouseState mouse) {
             bool bc;
             bool ac = true;
-            for(int y = 0; y < ScrHeight; y += Map.GridY) {
+            for (int y = 0; y < ScrHeight; y += Map.GridY) {
                 ac = !ac;
                 bc = ac;
-                for (int x=0; x<=ToolX; x += Map.GridX) {
+                for (int x = 0; x <= ToolX; x += Map.GridX) {
                     // The numbers in the for loop defs above will draw a bit more than needed, but this way I can be 100% sure no bugs occur!
                     bc = !bc;
                     MapConfig.GridCol(bc);
                     TQMG.DrawRectangle(x, y + EditStartY, Map.GridX, Map.GridY);
+                }
+            }
+        }
+
+        static Microsoft.Xna.Framework.Color[] ZoneCol = new Microsoft.Xna.Framework.Color[] {
+            new Microsoft.Xna.Framework.Color(127,127,127), //  0
+            new Microsoft.Xna.Framework.Color(127,127,255), //  1
+            new Microsoft.Xna.Framework.Color(255,  0,  0), //  2
+            new Microsoft.Xna.Framework.Color(  0,127,  0), //  3
+            new Microsoft.Xna.Framework.Color(255,180,180), //  4
+            new Microsoft.Xna.Framework.Color(180,120,  0), //  5
+            new Microsoft.Xna.Framework.Color(  0,  0,255), //  6
+            new Microsoft.Xna.Framework.Color(100, 60,255), //  7
+            new Microsoft.Xna.Framework.Color(180,255,  0), //  8
+            new Microsoft.Xna.Framework.Color(  0,255,255), //  9
+            new Microsoft.Xna.Framework.Color(180,  0,255), // 10
+            new Microsoft.Xna.Framework.Color(255,255,255), // 11
+            new Microsoft.Xna.Framework.Color(255,255,  0), // 12
+            new Microsoft.Xna.Framework.Color(255,155, 55), // 13
+            new Microsoft.Xna.Framework.Color(  0,180,255), // 14
+            new Microsoft.Xna.Framework.Color(255,180,  0)  // 15
+        };
+        static void DrawZone(string zone) {            
+            var z = Map.Layers[zone];
+            for (int y=0; y<=Map.SizeY; y++) {
+                var dy = EditStartY - ScrollY; dy += (y * Map.GridY);
+                for (int x = 0; x <= Map.SizeX; x++) {
+                    var zn = z.Get(x, y);
+                    if (zn != 0) {
+                        var dx = 0 - ScrollX; dx += (x * Map.GridX);
+                        var cl = zn % 16;
+                        TQMG.Color(ZoneCol[cl]);
+                        TQMG.SetAlpha((byte)30);
+                        TQMG.DrawRectangle(dx, dy, Map.GridX, Map.GridY);
+                        TQMG.SetAlpha((byte)255);
+                        TQMG.Color(0, 0, 0);
+                        for (int puk = -1; puk <= 1; puk += 2) {
+                            font20.DrawText(zn.ToString("X2"), dx + 2 + puk, dy + 2 + puk);
+                            font20.DrawText(zn.ToString("X2"), dx + 2 + puk, dy + 2 - puk);
+                        }
+                        TQMG.Color(ZoneCol[cl]);
+                        font20.DrawText(zn.ToString("X2"), dx + 2, dy + 2);
+                    }
                 }
             }
         }
@@ -336,15 +414,16 @@ namespace TeddyEdit {
             foreach(string lay in LayerList) {
                 TeddyDraw.DrawLayer(ProjectData.Map,lay,0,mapy,ScrollX,ScrollY);
             }
+            if (CurrentTool.Name == "Zones" && CurrentZone != null) DrawZone(CurrentZone);
             if (mouse.Y < mapy || mouse.X > ToolX) startX = -1;
-            else if (mouse.LeftButton==ButtonState.Pressed && startX<0) {
+            else if (mouse.LeftButton==ButtonState.Pressed && startX<0 && CurrentTool.boxdraw) {
                 /* BAAAAAD!
                 startX = ScrollX + mouse.X; startY = ScrollY + mouse.Y;
                 */
                 startX = PosX;
                 startY = PosY;
             }
-            if (startX >= 0 && startY >= 0) {
+            if (startX >= 0 && startY >= 0 ) {
                 ErrorNotice = "";
                 var sx = 0;
                 var sy = 0;
@@ -372,6 +451,9 @@ namespace TeddyEdit {
                 TQMG.DrawRectangle((sx*gx)-ScrollX, ((sy*gy)-ScrollY)+EditStartY, (((ex+1) - sx)*gx)-ScrollX, (((ey+1) - sy)*gy)-ScrollY);
                 TQMG.SetAlpha(255);
                 if (mouse.LeftButton != ButtonState.Pressed) {
+                    if (CurrentTool.Name == "Zones") {
+                        SetUpRecFill(TexSpot, CurrentZone, sx, sy, ex, ey);
+                    }
                     if (CurrentTool.Name == "Layers") {
                         if (!MapConfig.AllowSet(Map.Texture[TexSpot]) && TexSpot != 0) {
                             ErrorNotice = "Allowance not yet set! Please hit ctrl-o in order to configure that!";
