@@ -106,7 +106,8 @@ namespace TeddyBear {
                     BTE.WriteByte(4);
                     BTE.WriteString(K);
                     if (qstr.Left(K, 5) == "Zone_") {
-                        for (byte Ak = 0; Ak <= 255; Ak++) { // Zone Names (if the specific layer is a zone)
+                        for (byte Ak = 255; Ak > 0; Ak--) { // Zone Names (if the specific layer is a zone)
+                            if (map.ZName(K).Name[Ak] == null) map.ZName(K).Name[Ak] = "";
                             BTE.WriteByte(5);
                             BTE.WriteByte(Ak);
                             BTE.WriteString(map.ZName(K).Name[Ak]);

@@ -90,6 +90,10 @@ namespace TeddyBear{
 
     class TeddyZoneName { // This is only to form a return value to the ZName method in the 'TeddyBear' method
         public string[] Name = new string[256];
+        public TeddyZoneName() {
+            Name[0] = "";
+            for (byte i = 255; i > 0; i--) Name[i] = "";
+        }
     }
 
 
