@@ -25,6 +25,7 @@
 // EndLic
 
 
+
 #define TeddyUICrash
 #undef supportscript
 
@@ -122,6 +123,7 @@ namespace TeddyEdit {
         static SortedDictionary<PDMEN, TQMGText> PDM_Caption = new SortedDictionary<PDMEN, TQMGText>();
         static SortedDictionary<PDMEN, List<PDM_Item>> PDM_Items;
         static Dictionary<PDMEN, int> PDM_Width = new Dictionary<PDMEN, int>();
+        static Dictionary<PDMEN, int> PDM_Height = new Dictionary<PDMEN, int>();
         #endregion
 
         static public TQMGFont font12 { get; private set; }
@@ -156,6 +158,7 @@ namespace TeddyEdit {
         static Dictionary<bool, TQMGImage> ToolButton = new Dictionary<bool, TQMGImage>();
 
         static public bool MenuOpen = false;
+        static public PDMEN MenuPulled = (PDMEN)0;
 
         static List<ToolKind> Tools = new List<ToolKind>();
         static ToolKind CurrentTool;
@@ -176,8 +179,8 @@ namespace TeddyEdit {
 
         static UI() {
 
-            MKL.Version("TeddyBear - UserInterface.cs", "19.04.03");
-            MKL.Lic("TeddyBear - UserInterface.cs", "GNU General Public License 3");
+            MKL.Version("TeddyBear - UserInterface.cs","19.04.03");
+            MKL.Lic    ("TeddyBear - UserInterface.cs","GNU General Public License 3");
 
             #region load fonts
             font12 = TQMG.GetFont("fonts/SulphurPoint-Regular.12.jfbf");
@@ -207,11 +210,14 @@ namespace TeddyEdit {
             foreach (PDMEN i in PDM_Bar.Keys) {
                 PDM_Caption[i] = font20.Text(PDM_Bar[i]);
                 var w = 0;
+                var h = 0;
                 foreach(PDM_Item item in PDM_Items[i]) {
                     var wd = item.CaptText.Width + 40 + item.qkeyText.Width;
                     if (wd > w) w = wd;
+                    h += 25;
                 }
                 PDM_Width[i] = w;
+                PDM_Height[i] = h;
             }
             #endregion
 
@@ -357,12 +363,35 @@ namespace TeddyEdit {
         }
 
 
-        static public void DrawPDMenu() {
+        static public void DrawPDMenu(MouseState mouse) {
             int x = 10;
             TQMG.Color(255, 255, 255);
             TQMG.SimpleTile(back, 0, 0, ProjectData.Game.Window.ClientBounds.Width, EditStartY);
             foreach (PDMEN i in PDM_Caption.Keys) {
+                if (MenuOpen && MenuPulled == i) {
+                    TQMG.Color(20, 15, 0);
+                    TQMG.SetAlpha(20);
+                    TQMG.DrawRectangle(x - 5, 0,  20 + PDM_Caption[i].Width,EditStartY);
+                    TQMG.SetAlpha(255);
+                    TQMG.Color(255, 180, 0);
+                }
                 PDM_Caption[i].Draw(x, 5);
+                if (MenuOpen && MenuPulled==i) {
+                    TQMG.Color(255, 255, 255);
+                    TQMG.SimpleTile(back,x, EditStartY + 5, PDM_Width[i], PDM_Height[i]);
+                    var y = EditStartY + 6;
+                    var w = PDM_Width[i];
+                    foreach(PDM_Item item in PDM_Items[i]) {
+                        TQMG.Color(255, 255, 255);
+                        item.CaptText.Draw(x + 5, y);
+                        item.qkeyText.Draw((x + w) - 5, y, TQMG_TextAlign.Right);
+                        y += 22;
+                    }
+                    if (mouse.LeftButton == ButtonState.Pressed && (mouse.X < x || mouse.X > x + w || mouse.Y > EditStartY + PDM_Height[i])) MenuOpen = false;
+                } else if (mouse.LeftButton==ButtonState.Pressed && mouse.Y<EditStartY && mouse.X>x && mouse.X<x+20+PDM_Caption[i].Width) {
+                    MenuOpen = true;
+                    MenuPulled = i;
+                }
                 x += 20 + PDM_Caption[i].Width;
             }
 
@@ -468,7 +497,7 @@ namespace TeddyEdit {
             }
             if (CurrentTool.Name == "Zones" && CurrentZone != null) DrawZone(CurrentZone);
             if (mouse.Y < mapy || mouse.X > ToolX) startX = -1;
-            else if (mouse.LeftButton==ButtonState.Pressed && startX<0 && CurrentTool.boxdraw) {
+            else if ((!MenuOpen) && mouse.LeftButton==ButtonState.Pressed && startX<0 && CurrentTool.boxdraw) {
                 /* BAAAAAD!
                 startX = ScrollX + mouse.X; startY = ScrollY + mouse.Y;
                 */
@@ -554,7 +583,7 @@ namespace TeddyEdit {
             try {
                 DrawMap(ms);
                 DrawToolBox(ms); // Toolbox MUST come BEFORE pull down menu and status bar (conflict prevention)
-                DrawPDMenu();
+                DrawPDMenu(ms);
                 DrawStatusBar(ms);
             } catch (Exception Ex) {
                 ProjectData.Log($"Exception caught: {Ex.Message}\n{Ex.StackTrace}");
