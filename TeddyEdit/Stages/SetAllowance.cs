@@ -54,20 +54,22 @@ namespace TeddyEdit.Stages
 
             // Todo: Tile the requested texture
             for (int i = 0; i < UI.LayerList.Length; i++) {
+                if (!qstr.Prefixed(UI.LayerList[i], "Zone_")) { 
                 var cy = 100 + (i * 21);
                 TQMG.Color(255, 255, 255);
                 UI.LayerText[i].Draw(5, cy);
                 if (MapConfig.Allow(ProjectData.Map.Texture[Tex], UI.LayerList[i])==TexAllow.NotSet)
                     MapConfig.Allow(ProjectData.Map.Texture[Tex], UI.LayerList[i], TexAllow.Allow);
-                foreach(TexAllow a in AllowText.Keys) {
-                    var cx = ((int)a) * 150;
-                    if (MapConfig.Allow(ProjectData.Map.Texture[Tex], UI.LayerList[i]) == a)
-                        TQMG.Color(0, 180, 255);
-                    else
-                        TQMG.Color(180, 0, 255);
-                    AllowText[a].Draw(cx, cy, TQMG_TextAlign.Center);
-                    if (myMouse.Y > cy && myMouse.Y < cy + 20 && myMouse.X > cx - 70 && myMouse.X < cx + 70 && myMouse.LeftButton == ButtonState.Pressed) MapConfig.Allow(ProjectData.Map.Texture[Tex], UI.LayerList[i], a);
-                    // TODO: Click this
+                    foreach (TexAllow a in AllowText.Keys) {
+                        var cx = ((int)a) * 150;
+                        if (MapConfig.Allow(ProjectData.Map.Texture[Tex], UI.LayerList[i]) == a)
+                            TQMG.Color(0, 180, 255);
+                        else
+                            TQMG.Color(180, 0, 255);
+                        AllowText[a].Draw(cx, cy, TQMG_TextAlign.Center);
+                        if (myMouse.Y > cy && myMouse.Y < cy + 20 && myMouse.X > cx - 70 && myMouse.X < cx + 70 && myMouse.LeftButton == ButtonState.Pressed) MapConfig.Allow(ProjectData.Map.Texture[Tex], UI.LayerList[i], a);
+                        // TODO: Click this
+                    }
                 }
             }
 

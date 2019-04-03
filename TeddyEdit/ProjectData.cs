@@ -202,6 +202,10 @@ namespace TeddyEdit
                     var MJ = JCR6.Dir(_map);
                     if (MJ == null) { Crash.Error(Game, $"Error loading map: {JCR6.JERROR}"); AllWell = false; return; }
                     Map = TeddyMap.Load(MJ, texJCR, "");
+                    if (Map == null) {
+                        Crash.Error(Game, $"Map failed to load!\nJCR reported: {JCR6.JERROR}");
+                        return;
+                    }
                     foreach (string lay in MapLayers)
                         if (!Map.Layers.ContainsKey(lay)) Map.NewLayer(lay);
                 }

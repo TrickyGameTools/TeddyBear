@@ -227,16 +227,18 @@ namespace TeddyEdit {
                 }
             }
             for(int i=0; i < LayerList.Length; i++) {
-                int PosY = 210 + (i * 21);
-                TQMG.Color(255, 255, 255);
-                if (LayerVisible[i]) { Visible.Draw(ToolX + 5, PosY); }
-                if (LayerList[i] == CurrentLayer) TQMG.Color(255, 180, 0);
-                LayerText[i].Draw(ToolX + 100, PosY);
-                if (mouse.Y >= PosY && mouse.Y <= PosY + 20 && mouse.LeftButton == ButtonState.Pressed && !MenuOpen) {
-                    if (mouse.X > ToolX + 100)
-                        CurrentLayer = LayerList[i];
-                    else if (mouse.X > ToolX && Tool_LastMouse.LeftButton!=ButtonState.Pressed && !MenuOpen)
-                        LayerVisible[i] = !LayerVisible[i];
+                if (!qstr.Prefixed(LayerList[i].ToUpper(), "ZONE_")) {
+                    int PosY = 210 + (i * 21);
+                    TQMG.Color(255, 255, 255);
+                    if (LayerVisible[i]) { Visible.Draw(ToolX + 5, PosY); }
+                    if (LayerList[i] == CurrentLayer) TQMG.Color(255, 180, 0);
+                    LayerText[i].Draw(ToolX + 100, PosY);
+                    if (mouse.Y >= PosY && mouse.Y <= PosY + 20 && mouse.LeftButton == ButtonState.Pressed && !MenuOpen) {
+                        if (mouse.X > ToolX + 100)
+                            CurrentLayer = LayerList[i];
+                        else if (mouse.X > ToolX && Tool_LastMouse.LeftButton != ButtonState.Pressed && !MenuOpen)
+                            LayerVisible[i] = !LayerVisible[i];
+                    }
                 }
             }
             Tool_LastMouse = mouse;
