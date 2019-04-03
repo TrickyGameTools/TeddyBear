@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.04.02
+// Version: 19.04.03
 // EndLic
+
 
 
 
@@ -144,7 +145,7 @@ namespace TeddyEdit {
 
         static UI() {
             
-            MKL.Version("TeddyBear - UserInterface.cs","19.04.02");
+            MKL.Version("TeddyBear - UserInterface.cs","19.04.03");
             MKL.Lic    ("TeddyBear - UserInterface.cs","GNU General Public License 3");
             PDM_Bar[PDMEN.File] = "File";
             PDM_Bar[PDMEN.Textures] = "Textures";

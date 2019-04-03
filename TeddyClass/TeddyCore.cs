@@ -1,7 +1,7 @@
 // Lic:
 // TeddyClass/TeddyCore.cs
 // TeddyBear Core
-// version: 19.04.02
+// version: 19.04.03
 // Copyright (C)  Jeroen P. Broks
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -17,6 +17,7 @@
 // misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 // EndLic
+
 
 
 
@@ -91,8 +92,11 @@ namespace TeddyBear{
     class TeddyZoneName { // This is only to form a return value to the ZName method in the 'TeddyBear' method
         public string[] Name = new string[256];
         public TeddyZoneName() {
+
             Name[0] = "";
+
             for (byte i = 255; i > 0; i--) Name[i] = "";
+
         }
     }
 
@@ -347,7 +351,7 @@ namespace TeddyBear{
 
     class Core{
         static public void Init(){
-            MKL.Version("TeddyBear - TeddyCore.cs","19.04.02");
+            MKL.Version("TeddyBear - TeddyCore.cs","19.04.03");
             MKL.Lic    ("TeddyBear - TeddyCore.cs","ZLib License");
         }
     }

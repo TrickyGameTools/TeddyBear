@@ -1,7 +1,7 @@
 // Lic:
 // TeddyClass/TeddySave.cs
 // TeddyBear C#
-// version: 19.04.02
+// version: 19.04.03
 // Copyright (C)  Jeroen P. Broks
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -17,6 +17,7 @@
 // misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 // EndLic
+
 
 
 
@@ -45,7 +46,7 @@ namespace TeddyBear {
         static void Init() {
             Core.Init();
             MKL.Lic    ("TeddyBear - TeddySave.cs","ZLib License");
-            MKL.Version("TeddyBear - TeddySave.cs","19.04.02");
+            MKL.Version("TeddyBear - TeddySave.cs","19.04.03");
         }
 
         public delegate void DLog(string message);
