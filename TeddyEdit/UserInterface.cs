@@ -125,7 +125,10 @@ namespace TeddyEdit {
         static Dictionary<PDMEN, int> PDM_Width = new Dictionary<PDMEN, int>();
         static Dictionary<PDMEN, int> PDM_Height = new Dictionary<PDMEN, int>();
         static private int TrueMenuEvent=0;
-        static public int MenuEvent { get { var r = TrueMenuEvent; TrueMenuEvent = 0; return r; } }
+        static public int MenuEvent {
+            get { if (DontMouse) return 0; var r = TrueMenuEvent; TrueMenuEvent = 0; return r; }
+            private set { TrueMenuEvent = value; ProjectData.Log($"Menu event set to {value}"); }
+        }
         static public bool DontMouse = false;
 
         #endregion
@@ -395,12 +398,13 @@ namespace TeddyEdit {
                             TQMG.Color(255, 180, 0);
                             if (mouse.LeftButton == ButtonState.Pressed) {
                                 MenuOpen = false;
-                                TrueMenuEvent = item.MenuEventCode;
+                                MenuEvent = item.MenuEventCode;
                                 DontMouse = true;
                             }
                         }
                         item.CaptText.Draw(x + 5, y);
                         item.qkeyText.Draw((x + w) - 5, y, TQMG_TextAlign.Right);
+                        TQMG.Color(255, 255, 255);
                         y += 22;
                     }
                     if (mouse.LeftButton == ButtonState.Pressed && (mouse.X < x || mouse.X > x + w || mouse.Y > EditStartY + PDM_Height[i])) { MenuOpen = false; DontMouse = true; }

@@ -50,6 +50,7 @@ namespace TeddyEdit.Stages {
     class Main : BasisStage {
         MouseState MS;
         static public int CurTexSpot = 1;
+        static public bool DoQuit { get; private set; } = false;
 
         public void SaveMap() {
             UI.ErrorNotice = "";
@@ -62,13 +63,24 @@ namespace TeddyEdit.Stages {
         public override void Update(Game1 game, GameTime gameTime, MouseState mouse, GamePadState gamepad, KeyboardState kb) {
             MS = mouse;
             TQMGKey.Start(kb);
+            var menev = UI.MenuEvent;
+            if (menev != 0) {
+                //ProjectData.Log($"Got Menu Event {menev}");
+                switch (menev) {
+                    case 1001: Meta.ComeToMe(); break;
+                    case 1002: SaveMap(); break;
+                    case 1003: DoQuit = true; break;
+                    case 2001: if (CurTexSpot>0) TextureLoad.ComeToMe(CurTexSpot); break;
+                    case 2004: SetAllowance.ComeToMe(CurTexSpot); break;
+                    default: ProjectData.Log($"Unknown menu event: {menev}"); break;
+                }
+            }
             if (kb.IsKeyDown(Keys.LeftControl)) {
                 if (kb.IsKeyDown(Keys.G)) MapConfig.ShowGrid = !MapConfig.ShowGrid;
                 if (kb.IsKeyDown(Keys.M)) Meta.ComeToMe();
                 if (kb.IsKeyDown(Keys.O)) SetAllowance.ComeToMe(CurTexSpot);
-                if (kb.IsKeyDown(Keys.T) && CurTexSpot > 0)
-                    TextureLoad.ComeToMe(CurTexSpot);
-                if (kb.IsKeyDown(Keys.S)) SaveMap();
+                if (kb.IsKeyDown(Keys.T)  && CurTexSpot > 0)  TextureLoad.ComeToMe(CurTexSpot);
+                if (kb.IsKeyDown(Keys.S) ) SaveMap();
                 if (kb.IsKeyDown(Keys.Left) && UI.ScrollX > 0) { UI.ScrollX -= ProjectData.Map.GridX / 2; if (UI.ScrollX < 0) UI.ScrollX = 0; }
                 if (kb.IsKeyDown(Keys.Up) && UI.ScrollY > 0) { UI.ScrollY -= ProjectData.Map.GridY / 2; if (UI.ScrollY < 0) UI.ScrollY = 0; }
                 if (kb.IsKeyDown(Keys.Down)) UI.ScrollY += ProjectData.Map.GridY / 2;
