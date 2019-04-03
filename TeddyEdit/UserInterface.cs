@@ -107,7 +107,7 @@ namespace TeddyEdit {
         static TQMGText ProjectAndFile;
         static public TQMGImage ArrowUp { get; private set; }
         static public TQMGImage ArrowDn { get; private set; }
-        static public TQMGImage ArrowDown => ArrowDn;
+        static public TQMGImage ArrowDown => ArrowDn;        
         static int TexSpot { get => Main.CurTexSpot; set { Main.CurTexSpot = value; } }
 
         #region Layer data
@@ -123,7 +123,7 @@ namespace TeddyEdit {
 
         static Dictionary<bool, TQMGImage> ToolButton = new Dictionary<bool, TQMGImage>();
 
-        static bool MenuOpen = false;
+        static public bool MenuOpen = false;
 
         static List<ToolKind> Tools = new List<ToolKind>();
         static ToolKind CurrentTool;
@@ -181,7 +181,7 @@ namespace TeddyEdit {
             }
             NewTool("Layers", Tool_Layers, Tool_LayersUpdate);
             NewTool("Objects", delegate { font20.DrawText("Objects not yet implemented", ToolX, 200); }, delegate { });
-            NewTool("Zones", delegate { font20.DrawText("Zones not yet implemented", ToolX, 200); }, delegate { });
+            NewTool("Zones", Tool_Zones, delegate { });
             NewTool("Script", delegate { font20.DrawText("Script not yet implemented", ToolX, 200); }, delegate { }); // TODO: Script
             ToolButton[false] = TQMG.GetImage("toolbutton_0.png");
             ToolButton[true] = TQMG.GetImage("toolbutton_1.png");
@@ -232,10 +232,10 @@ namespace TeddyEdit {
                 if (LayerVisible[i]) { Visible.Draw(ToolX + 5, PosY); }
                 if (LayerList[i] == CurrentLayer) TQMG.Color(255, 180, 0);
                 LayerText[i].Draw(ToolX + 100, PosY);
-                if (mouse.Y >= PosY && mouse.Y <= PosY + 20 && mouse.LeftButton == ButtonState.Pressed) {
+                if (mouse.Y >= PosY && mouse.Y <= PosY + 20 && mouse.LeftButton == ButtonState.Pressed && !MenuOpen) {
                     if (mouse.X > ToolX + 100)
                         CurrentLayer = LayerList[i];
-                    else if (mouse.X > ToolX && Tool_LastMouse.LeftButton!=ButtonState.Pressed)
+                    else if (mouse.X > ToolX && Tool_LastMouse.LeftButton!=ButtonState.Pressed && !MenuOpen)
                         LayerVisible[i] = !LayerVisible[i];
                 }
             }
@@ -243,11 +243,28 @@ namespace TeddyEdit {
         }
 
         static void Tool_LayersUpdate(MouseState mouse)  {
-            if (mouse.Y > 150 && mouse.Y < 182 && !ArrowWasPressed && mouse.LeftButton == ButtonState.Pressed) {
+            if (mouse.Y > 150 && mouse.Y < 182 && !ArrowWasPressed && mouse.LeftButton == ButtonState.Pressed && !MenuOpen) {
                 if (mouse.X > ToolX && mouse.X < ToolX + 32 && TexSpot > 0) TexSpot--;
                 if (mouse.X > ToolX+40 && mouse.X < ToolX + 72 && TexSpot < 255) TexSpot++;
             }
             ArrowWasPressed = mouse.LeftButton == ButtonState.Pressed;
+        }
+
+        static void Tool_Zones(MouseState mouse)
+        {
+            TQMG.Color(0, 180, 255);
+            if (mouse.X > ToolX && mouse.X < ToolX + 32 && mouse.Y > 150 && mouse.Y < 182) TQMG.Color(180, 0, 255);
+            ArrowUp.Draw(ToolX, 150);
+            TQMG.Color(0, 180, 255);
+            if (mouse.X > ToolX + 40 && mouse.X < ToolX + 72 && mouse.Y > 150 && mouse.Y < 182) TQMG.Color(180, 0, 255);
+            ArrowDn.Draw(ToolX + 40, 150);
+            TQMG.Color(255, 180, 0);
+            font32.DrawText(TexSpot.ToString("X2"), ToolX + 80, 150);
+            if (TexSpot == 0) {
+                TQMG.Color(255, 0, 0);
+                TxNULL.Draw(ToolX + 200, 150);
+            } else {
+            }
         }
 
         static public void DrawPDMenu()  {
@@ -272,7 +289,7 @@ namespace TeddyEdit {
                 tool.Icon.Draw(ToolX + tool.x, 50);
                 ToolButton[tool.selected].Draw(ToolX + tool.x, 50);
                 #region Dirty code straight from Hell, but I don't care!
-                if (mouse.X>tool.x+ToolX && mouse.Y>50 && mouse.Y < 114 && mouse.LeftButton==ButtonState.Pressed) {
+                if (mouse.X>tool.x+ToolX && mouse.Y>50 && mouse.Y < 114 && mouse.LeftButton==ButtonState.Pressed && !MenuOpen) {
                     foreach(ToolKind ModToolTab in Tools) {
                         ModToolTab.selected = ModToolTab == tool; // Yeah, this must have the same reference!!!
                         if (ModToolTab.selected) CurrentTool = ModToolTab;

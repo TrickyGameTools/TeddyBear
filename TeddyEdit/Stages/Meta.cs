@@ -110,6 +110,5 @@ namespace TeddyEdit.Stages
                 f.Value += ch;
             }
         }
-
     }
 }

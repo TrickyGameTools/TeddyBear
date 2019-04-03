@@ -202,6 +202,8 @@ namespace TeddyEdit
                     var MJ = JCR6.Dir(_map);
                     if (MJ == null) { Crash.Error(Game, $"Error loading map: {JCR6.JERROR}"); AllWell = false; return; }
                     Map = TeddyMap.Load(MJ, texJCR, "");
+                    foreach (string lay in MapLayers)
+                        if (!Map.Layers.ContainsKey(lay)) Map.NewLayer(lay);
                 }
                 if (Map==null) { Crash.Error(Game,$"Error loading map \"{_map}\""); AllWell = false; return; }
                 // The settings file is kept apart from the map file for the main reason that TeddyBear has primarily been designed
