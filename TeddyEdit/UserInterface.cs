@@ -533,6 +533,22 @@ namespace TeddyEdit {
             }
         }
 
+        static public void DrawObjects(MouseState mouse) {
+            TQMG.Color(255, 255, 255);
+            for (int y = 0;  y < Map.OHeight;y++)
+                for (int x=0; x < Map.OWidth; x++) {
+                    var ol = Map.ObjectList(x, y);
+                    if (ol.Count > 0) {
+                        var dx = (0 - ScrollX) + (x * Map.GridX);
+                        var dy = (0 - ScrollY) + (y * Map.GridY);
+                        if (dx>-Map.GridX && dy>-Map.GridY && dx<ScrWidth && dy < ScrHeight) {
+                            TQMG.DrawLineRect(dx, dy + EditStartY, Map.GridX, Map.GridY);
+                            font20.DrawText($"O:{ol.Count}",dx+2,EditStartY+dy+2);
+                        }
+                    }
+                }
+        }
+
         static public void DrawMap(MouseState mouse) {
             const int mapy = EditStartY;
             if (MapConfig.ShowGrid) DrawGrid(mouse);
@@ -540,6 +556,7 @@ namespace TeddyEdit {
             foreach(string lay in LayerList) {
                 TeddyDraw.DrawLayer(ProjectData.Map,lay,0,mapy,ScrollX,ScrollY);
             }
+            DrawObjects(mouse);
             if (CurrentTool.Name == "Zones" && CurrentZone != null) DrawZone(CurrentZone);
             if (mouse.Y < mapy || mouse.X > ToolX) startX = -1;
             else if ((!MenuOpen) && TrueMenuEvent==0 && mouse.LeftButton==ButtonState.Pressed && startX<0 && CurrentTool.boxdraw) {
