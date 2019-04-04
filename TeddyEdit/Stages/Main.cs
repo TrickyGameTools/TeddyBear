@@ -73,10 +73,12 @@ namespace TeddyEdit.Stages {
                     case 1003: DoQuit = true; break;
                     case 2001: if (CurTexSpot>0) TextureLoad.ComeToMe(CurTexSpot); break;
                     case 2004: SetAllowance.ComeToMe(CurTexSpot); break;
+                    case 3001: ObjectSelector.ComeToMe(); break;
                     default: ProjectData.Log($"Unknown menu event: {menev}"); break;
                 }
             }
             if (kb.IsKeyDown(Keys.LeftControl)) {
+                if (kb.IsKeyDown(Keys.B)) ObjectSelector.ComeToMe();
                 if (kb.IsKeyDown(Keys.G)) MapConfig.ShowGrid = !MapConfig.ShowGrid;
                 if (kb.IsKeyDown(Keys.M)) Meta.ComeToMe();
                 if (kb.IsKeyDown(Keys.O)) SetAllowance.ComeToMe(CurTexSpot);

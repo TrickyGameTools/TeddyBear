@@ -83,13 +83,14 @@ namespace TeddyEdit {
             readonly public string Name;
             readonly public ToolDraw Draw;
             readonly public ToolMouse Mouse;
-            public ToolKind(int getx, string getname, ToolDraw getdraw, ToolMouse getmouse) {
+            public ToolKind(int getx, string getname, ToolDraw getdraw, ToolMouse getmouse, bool aboxdraw=true) {
                 selected = getx == 0;
                 if (selected) CurrentTool = this;
                 x = getx;
                 Name = getname;
                 Draw = getdraw;
                 Mouse = getmouse;
+                boxdraw = aboxdraw;
                 // TODO: Load the icon
             }
         }
@@ -174,7 +175,7 @@ namespace TeddyEdit {
         static TQMGText TxNULL;
         static TeddyMap Map => ProjectData.Map;
         static public string ErrorNotice = "";
-        static string CurrentObject = "";
+        static public string CurrentObject = "";
 
         #region position
         static public int startX = -1;
@@ -210,6 +211,7 @@ namespace TeddyEdit {
                 PDM_Item.New(PDMEN.Textures, "Remove Texture", 2003, "^D");
                 PDM_Item.New(PDMEN.Textures, "Texture Allowance", 2004, "^O");
                 PDM_Bar[PDMEN.Objects] = "Objects"; PDM_Items[PDMEN.Objects] = new List<PDM_Item>();
+                PDM_Item.New(PDMEN.Objects, "Select Object", 3001, "^B");
 #if supportscript
             PDM_Bar[PDMEN.Script] = "Script"
 #endif
@@ -248,16 +250,26 @@ namespace TeddyEdit {
             CurrentLayer = LayerList[0];
 
             #region Create the tools
-            void NewTool(string name, ToolDraw draw, ToolMouse mouse) {
-                Tools.Add(new ToolKind(Tools.Count * 65, name, draw, mouse));
+            void NewTool(string name, ToolDraw draw, ToolMouse mouse,bool blockdraw=true) {
+                Tools.Add(new ToolKind(Tools.Count * 65, name, draw, mouse,blockdraw));
             }
             NewTool("Layers", Tool_Layers, Tool_LayersUpdate);
-            NewTool("Objects", delegate { font20.DrawText("Objects not yet implemented", ToolX, 200); }, delegate { });
+            NewTool("Objects", Tool_Objects, delegate { },false);
             NewTool("Zones", Tool_Zones, Tool_ZonesUpdate);
             NewTool("Script", delegate { font20.DrawText("Script not yet implemented", ToolX, 200); }, delegate { }); // TODO: Script
             ToolButton[false] = TQMG.GetImage("toolbutton_0.png");
             ToolButton[true] = TQMG.GetImage("toolbutton_1.png");
             #endregion
+        }
+
+        static void Tool_Objects(MouseState mouse) {
+            if (CurrentObject == "") {
+                TQMG.Color(255, 0, 0);
+                TxNULL.Draw(ToolX + 25, 150);
+            } else {
+                TQMG.Color(255, 180, 0);
+                font20.DrawText(CurrentObject, ToolX + 5, 150);
+            }
         }
 
         static bool ArrowWasPressed = false;
