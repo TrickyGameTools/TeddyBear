@@ -190,6 +190,7 @@
     <Compile Include="Stages\Crash.cs" />
     <Compile Include="Stages\Main.cs" />
     <Compile Include="Stages\Meta.cs" />
+    <Compile Include="Stages\ObjectSelector.cs" />
     <Compile Include="Stages\SetAllowance.cs" />
     <Compile Include="Stages\TextureLoad.cs" />
     <Compile Include="UserInterface.cs" />
