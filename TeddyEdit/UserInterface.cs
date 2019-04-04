@@ -175,7 +175,13 @@ namespace TeddyEdit {
         static TQMGText TxNULL;
         static TeddyMap Map => ProjectData.Map;
         static public string ErrorNotice = "";
+
+        #region object selection vars
         static public string CurrentObject = "";
+        static public int cobjx = 0;
+        static public int cobjy = 0;
+        static TeddyObject cobj = null;
+        #endregion
 
         #region position
         static public int startX = -1;
@@ -270,15 +276,32 @@ namespace TeddyEdit {
                 TQMG.Color(255, 180, 0);
                 font20.DrawText(CurrentObject, ToolX + 5, 150);
             }
+            TQMG.Color(255, 255, 255);
+            if (cobjx >= 0 && cobjy >= 0 && Map.ObjectList(cobjx, cobjy).Count > 0) {
+                font20.DrawText($"Object List ({cobjx},{cobjy})",ToolX+5,200);
+                var oy = 250;
+                foreach(TeddyObject o in Map.ObjectList(cobjx, cobjy)) {
+                    TQMG.Color(180, 0, 255);
+                    var f = "TeddyID";
+                    if (ProjectData.ProjectConfig.C($"ListObject.{o.ObjType}") != "") f = ProjectData.ProjectConfig.C($"ListObject.{o.ObjType}");
+                    font20.DrawText($"{o.ObjType}:{o.Cl(f)}",ToolX+5,oy);
+                    oy += 22;
+                }
+            }
         }
 
         static void Tool_ObjectsUpdate(MouseState mouse) {
-            if (CurrentObject!="" && mouse.X<ToolX && mouse.Y>EditStartY && (!DontMouse) && mouse.LeftButton==ButtonState.Pressed) {
+            if ( mouse.X<ToolX && mouse.Y>EditStartY && (!DontMouse) ) {
                 if (PosX<=Map.OWidth && PosY <= Map.OHeight) {
-                    var o = new TeddyObject();
-                    o.ObjType = CurrentObject;
-                    Map.ObjectList(PosX, PosY).Add(o);
-                    ObjectEditor.ComeToMe(PosX, PosY, o);
+                    if (CurrentObject != "" && mouse.LeftButton == ButtonState.Pressed) {
+                        var o = new TeddyObject();
+                        o.ObjType = CurrentObject;
+                        Map.ObjectList(PosX, PosY).Add(o);
+                        ObjectEditor.ComeToMe(PosX, PosY, o);
+                    } else if (mouse.RightButton==ButtonState.Pressed) {
+                        cobjx = PosX;
+                        cobjy = PosY;
+                    }
                 }
             }
         }
