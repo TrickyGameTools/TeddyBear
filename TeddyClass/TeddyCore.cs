@@ -71,6 +71,7 @@ namespace TeddyBear{
     }
 
     class TeddyObject {
+        static int n = 0;
         Dictionary<string, string> Data;
         public string ObjType = "";
         public void Df(string k, string v) { if (Data == null) Data = new Dictionary<string, string>(); Data[k] = v; }
@@ -84,6 +85,10 @@ namespace TeddyBear{
                 if (Data == null) Data = new Dictionary<string, string>();
                 return Data.Keys;
             }
+        }
+        public TeddyObject() {
+            Df("TeddyID", $"TED-{DateTime.Now.GetHashCode().ToString("X")}-{n}");
+            n++;
         }
 
 

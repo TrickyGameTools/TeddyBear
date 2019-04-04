@@ -254,7 +254,7 @@ namespace TeddyEdit {
                 Tools.Add(new ToolKind(Tools.Count * 65, name, draw, mouse,blockdraw));
             }
             NewTool("Layers", Tool_Layers, Tool_LayersUpdate);
-            NewTool("Objects", Tool_Objects, delegate { },false);
+            NewTool("Objects", Tool_Objects,Tool_ObjectsUpdate ,false);
             NewTool("Zones", Tool_Zones, Tool_ZonesUpdate);
             NewTool("Script", delegate { font20.DrawText("Script not yet implemented", ToolX, 200); }, delegate { }); // TODO: Script
             ToolButton[false] = TQMG.GetImage("toolbutton_0.png");
@@ -269,6 +269,17 @@ namespace TeddyEdit {
             } else {
                 TQMG.Color(255, 180, 0);
                 font20.DrawText(CurrentObject, ToolX + 5, 150);
+            }
+        }
+
+        static void Tool_ObjectsUpdate(MouseState mouse) {
+            if (CurrentObject!="" && mouse.X<ToolX && mouse.Y>EditStartY && (!DontMouse) && mouse.LeftButton==ButtonState.Pressed) {
+                if (PosX<=Map.OWidth && PosY <= Map.OHeight) {
+                    var o = new TeddyObject();
+                    o.ObjType = CurrentObject;
+                    Map.ObjectList(PosX, PosY).Add(o);
+                    ObjectEditor.ComeToMe(PosX, PosY, o);
+                }
             }
         }
 
