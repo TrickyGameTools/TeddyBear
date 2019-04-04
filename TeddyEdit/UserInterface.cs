@@ -174,6 +174,7 @@ namespace TeddyEdit {
         static TQMGText TxNULL;
         static TeddyMap Map => ProjectData.Map;
         static public string ErrorNotice = "";
+        static string CurrentObject = "";
 
         #region position
         static public int startX = -1;
