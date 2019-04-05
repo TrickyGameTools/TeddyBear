@@ -1,7 +1,7 @@
 // Lic:
 // TeddyClass/TeddyCore.cs
 // TeddyBear Core
-// version: 19.04.03
+// version: 19.04.05
 // Copyright (C)  Jeroen P. Broks
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -17,6 +17,7 @@
 // misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 // EndLic
+
 
 
 
@@ -87,8 +88,11 @@ namespace TeddyBear{
             }
         }
         public TeddyObject() {
+
             Df("TeddyID", $"TED-{DateTime.Now.GetHashCode().ToString("X")}-{n}");
+
             n++;
+
         }
 
 
@@ -356,7 +360,7 @@ namespace TeddyBear{
 
     class Core{
         static public void Init(){
-            MKL.Version("TeddyBear - TeddyCore.cs","19.04.03");
+            MKL.Version("TeddyBear - TeddyCore.cs","19.04.05");
             MKL.Lic    ("TeddyBear - TeddyCore.cs","ZLib License");
         }
     }

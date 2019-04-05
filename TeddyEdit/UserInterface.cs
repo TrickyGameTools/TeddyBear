@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.04.04
+// Version: 19.04.05
 // EndLic
+
 
 
 
@@ -195,7 +196,7 @@ namespace TeddyEdit {
 
         static UI() {
 
-            MKL.Version("TeddyBear - UserInterface.cs","19.04.04");
+            MKL.Version("TeddyBear - UserInterface.cs","19.04.05");
             MKL.Lic    ("TeddyBear - UserInterface.cs","GNU General Public License 3");
 
             #region load fonts

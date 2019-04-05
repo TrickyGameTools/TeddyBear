@@ -15,8 +15,9 @@ not longer than 70 years ago, you can deem this file
 with basically comes down to the same lack of
 restriction the public domain offers. (YAY!)
 ***********************************************************
-Version 19.03.20
+Version 19.04.05
 -- End License block   """
+
 
 
 # This small script only serves to make my auto updater renumber all 
@@ -39,7 +40,10 @@ for f in glob("TeddyWizard/*.cs"):
 for f in glob("TeddyEdit/*.cs"):
     doIt(f)
 for f in glob("TeddyEdit/Stages/*.cs"):
+    doIt(f)                            
+for f in glob("xport/cli/*.cs"):
     doIt(f)
-
+for f in glob("xport/class/*.cs"):
+    doIt(f)                     
 
 system("MKL_Update")
