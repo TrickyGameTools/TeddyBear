@@ -284,6 +284,10 @@ namespace TeddyEdit {
                     TQMG.Color(180, 0, 255);
                     var f = "TeddyID";
                     if (ProjectData.ProjectConfig.C($"ListObject.{o.ObjType}") != "") f = ProjectData.ProjectConfig.C($"ListObject.{o.ObjType}");
+                    if (mouse.X>ToolX && mouse.Y>oy && mouse.Y < oy + 20) {
+                        TQMG.Color(0, 180, 255);
+                        if (mouse.LeftButton == ButtonState.Pressed && !DontMouse) ObjectEditor.ComeToMe(cobjx,cobjy,o);
+                    }
                     font20.DrawText($"{o.ObjType}:{o.Cl(f)}",ToolX+5,oy);
                     oy += 22;
                 }

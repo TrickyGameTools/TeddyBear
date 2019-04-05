@@ -151,6 +151,63 @@ namespace TeddyEdit.Stages
             texSpot = texspot;
             ProjectData.Game.SetStage(me);
         }
+    }
+
+
+    class AllTextures : BasisStage {
+
+        readonly static AllTextures me = new AllTextures();
+        byte spot;
+        string prefix;
+        
+        void Go() {
+            int i = spot;
+            foreach (TJCREntry entry in ProjectData.texJCR.Entries.Values) {
+                if (qstr.Prefixed(entry.Entry.ToUpper(), prefix.ToUpper())) {
+                    while (i == 0 || !(ProjectData.Map.Texture[i] == "" || ProjectData.Map.Texture[i]==null)) {
+                        ProjectData.Log($"{entry.Entry}: Not on spot {i.ToString("X2")} / \"{ProjectData.Map.Texture[i]}\"");
+                        i++;
+                        if (i > 255) i = 0;
+                        if (i == spot) {
+                            UI.ErrorNotice = $"I could not assign {entry.Entry}, as I had no more free spots";
+                            Main.ComeToMe();
+                            return;
+                        }
+                    }
+                    ProjectData.Log($"Assigning {entry.Entry} to slot {i.ToString("X2")}");
+                    ProjectData.Map.Texture[i] = entry.Entry;
+                }
+            }
+            Main.ComeToMe();
+        }
+
+        public override void Draw(Game1 game, GameTime gameTime)  {
+            TQMG.Color(0, 180, 255); // This effect was originall a bug, but in stead of fixing it, I decided to "seal" it in :P
+            TQMG.SimpleTile(UI.back, 0, 0, UI.ScrWidth, UI.ScrHeight);
+            TQMG.Color(255, 180, 0);
+            UI.font32.DrawText($"All Textures! Starting at {spot.ToString("X2")}",UI.ScrWidth/2,50,TQMG_TextAlign.Center);
+            TQMG.Color(180, 0, 255);
+            UI.font20.DrawText("Prefix:", 10, 100);
+            TQMG.Color(0, 18, 25);
+            TQMG.DrawRectangle(10, 125, UI.ScrWidth - 20, 22);
+            TQMG.Color(0, 180, 255);
+            UI.font20.DrawText($"{prefix}|",12,126);
+        }
+
+        public override void Update(Game1 game, GameTime gameTime, MouseState mouse, GamePadState gamepad, KeyboardState kb) {
+            TQMGKey.Start(kb);
+            var ch = TQMGKey.GetChar();
+            if (ch > 31 && UI.font20.TextWidth(prefix) < UI.ScrWidth - 25) prefix += ch;
+            if (TQMGKey.Hit(Keys.Back) && prefix != "") prefix = qstr.Left(prefix, prefix.Length - 1);
+            if (TQMGKey.Hit(Keys.Escape)) Main.ComeToMe();
+            if (TQMGKey.Hit(Keys.Enter) && prefix != "") Go();
+        }
+
+        public static void ComeToMe(byte spot) {
+            me.spot = spot;
+            ProjectData.Game.SetStage(me);
+            me.prefix = "";
+        }
 
     }
 }

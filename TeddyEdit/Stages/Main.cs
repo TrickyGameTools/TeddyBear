@@ -82,8 +82,9 @@ namespace TeddyEdit.Stages {
                 if (kb.IsKeyDown(Keys.G)) MapConfig.ShowGrid = !MapConfig.ShowGrid;
                 if (kb.IsKeyDown(Keys.M)) Meta.ComeToMe();
                 if (kb.IsKeyDown(Keys.O)) SetAllowance.ComeToMe(CurTexSpot);
+                if (kb.IsKeyDown(Keys.R)) AllTextures.ComeToMe((byte)CurTexSpot);
+                if (kb.IsKeyDown(Keys.S)) SaveMap();
                 if (kb.IsKeyDown(Keys.T)  && CurTexSpot > 0)  TextureLoad.ComeToMe(CurTexSpot);
-                if (kb.IsKeyDown(Keys.S) ) SaveMap();
                 if (kb.IsKeyDown(Keys.Left) && UI.ScrollX > 0) { UI.ScrollX -= ProjectData.Map.GridX / 2; if (UI.ScrollX < 0) UI.ScrollX = 0; }
                 if (kb.IsKeyDown(Keys.Up) && UI.ScrollY > 0) { UI.ScrollY -= ProjectData.Map.GridY / 2; if (UI.ScrollY < 0) UI.ScrollY = 0; }
                 if (kb.IsKeyDown(Keys.Down)) UI.ScrollY += ProjectData.Map.GridY / 2;

@@ -152,7 +152,13 @@ namespace TeddyEdit.Stages
             TQMGKey.Start(kb);
             var ch = TQMGKey.GetChar();
             muis = mouse;
-            if (kb.IsKeyDown(Keys.Escape)) Main.ComeToMe();
+            if (kb.IsKeyDown(Keys.Escape)) { UI.DontMouse = true; Main.ComeToMe(); }
+            if (kb.IsKeyDown(Keys.Delete) && (kb.IsKeyDown(Keys.LeftShift) || kb.IsKeyDown(Keys.RightShift))){
+                ProjectData.Log($"Removed object: {obj.Cl("TeddyID")}");
+                ProjectData.Map.ObjectList(x, y).Remove(obj);
+                UI.DontMouse = true;
+                Main.ComeToMe();
+            }
             if (curField != "") {
                 if (ch > 31 && font20.TextWidth(obj.Cl(curField)) < UI.ScrWidth - 290) obj.Df(curField, $"{obj.Cl(curField)}{ch}");
                 if (TQMGKey.Hit(Keys.Back) && obj.Cl(curField) != "") obj.Df(curField,qstr.Left(obj.Cl(curField), obj.Cl(curField).Length-1));
