@@ -47,7 +47,7 @@
    "%TRICKYMSBUILD%" /p:Configuration=Release TeddyEdit.sln > ..\ErrorLog\Edit.txt
    if errorlevel 1 goto ERROREDITOR
    cd ..
-   goto DORELEASE
+   goto BUILDXPORTCLI
 
 :ERROREDITOR
    cd ..
@@ -57,19 +57,36 @@
    type ErrorLog\Edit.txt
    goto FINALE
 
+:BUILDXPORTCLI
+   echo Compiling CLI Exporter
+   cd xport\cli
+   "%TRICKYMSBUILD%" /p:Configuration=Release TeddyXport.sln > ..\..\ErrorLog\XCLI.txt
+   if errorlevel 1 goto ERRORXPORTCLI
+   cd ..\..
+   goto DORELEASE
+   
+:ERRORXPORTCLI
+   cd ..\..
+   cls
+   echo:Building the cli exporter failed!
+   echo:
+   type ErrorLog\XCLI.txt
+   goto FINALE
+
 
 :DORELEASE
-   echo:Creating Release
-   echo:Copying Launcher
-   copy TeddyLaunch\bin\release\*.exe Release
+   echo Creating Release
+   echo Copying Launcher
+   xcopy/q/y TeddyLaunch\bin\release\*.exe Release
    echo:Copying Wizard
-   copy TeddyWizard\bin\release\*.exe Release
-   echo:Copying Editor
-   copy TeddyEdit\bin\Windows\x86\Release\*.exe Release
-   copy TeddyEdit\bin\Windows\x86\Release\*.dll Release
-   copy TeddyEdit\bin\Windows\x86\Release\*.xml Release
+   xcopy/q/y TeddyWizard\bin\release\*.exe Release
+   echo Copying Editor
+   xcopy/q/y TeddyEdit\bin\Windows\x86\Release\*.exe Release
+   xcopy/q/y TeddyEdit\bin\Windows\x86\Release\*.dll Release
+   xcopy/q/y TeddyEdit\bin\Windows\x86\Release\*.xml Release
+   echo Copying CLI Exporter
+   xcopy/q/y xport\cli\bin\Release\*.exe Release
    goto FINALE
-   
    
    
 :FINALE
