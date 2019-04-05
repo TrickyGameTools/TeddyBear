@@ -30,6 +30,7 @@ using System.Linq;
 using System.Diagnostics;
 using System.IO;
 using TrickyUnits;
+using UseJCR6;
 
 namespace TeddyXport{
 
@@ -145,8 +146,23 @@ namespace TeddyXport{
             }
         }
 
-        void TranslateMaps() {
+        void Doing(string a, string b) {
+            cwrite(ConsoleColor.Yellow, $"{a}: ");
+            cwriteln(ConsoleColor.Cyan, b);
+        }
 
+        void TranslateMaps() {
+            Doing("Analysing Maps for Project", XProject);
+            var tdrv = XPort_Base.Drivers[XTarget];
+            var mapdir = Dirry.AD(ProjectConfig.C("LevelDir"));
+            var fl = FileList.GetDir(mapdir);
+            foreach(string mapname in fl) {
+                Doing("Translating", mapname);
+                var map = TeddyBear.TeddyMap.Load($"{mapdir}/{mapname}");
+                if (map == null) Crash($"Map Load Error\n{JCR6.JERROR}");
+                var translation = tdrv.Translate(map);
+                QuickStream.SaveString(tdrv.TransFile($"{XTo}/{mapname}"), translation);
+            }
         }
 
         void main(string[] args) {
@@ -156,6 +172,8 @@ namespace TeddyXport{
             cwriteln(ConsoleColor.Cyan, "\tCoded by: Jeroen P. Broks");
             cwriteln(ConsoleColor.Magenta, $"(c) {MKL.CYear(2019)} Jeroen P. Broks, Released under the terms of the GPL 3\n");
             XPort.init();
+            JCR6_lzma.Init();
+            JCR6_zlib.Init();
             LoadMainConfig();
             SetupProject(args);
             CreateTo();

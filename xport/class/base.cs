@@ -20,6 +20,9 @@ namespace TeddyXport{
 
     class XPort { static public void init() {
             XPort_Base.Drivers["json"] = new XPort_JSON();
+            XPort_Base.Drivers["python"] = new XPort_Python();
+            XPort_Base.Drivers["javascript"] = new XPort_JavaScript();
+            XPort_Base.Drivers["lua"] = new XPort_Lua();
         }
     }
 }
