@@ -198,7 +198,6 @@
     </Compile>
     <Compile Include="TeddyXPort.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FakeTQMG.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\JCR6\Drivers\Compression\lzma\readme.md">

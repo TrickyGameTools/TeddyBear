@@ -1,6 +1,6 @@
 // Lic:
-// TeddyBear Exporter
-// Main Manager
+// TeddyBear Xporter
+// Main source for the CLI tool
 // 
 // 
 // 
@@ -23,6 +23,8 @@
 // 
 // Version: 19.04.05
 // EndLic
+
+
 
 using System;
 using System.Collections.Generic;
@@ -166,8 +168,8 @@ namespace TeddyXport{
         }
 
         void main(string[] args) {
-            MKL.Version("TeddyBear - Program.cs","19.04.05");
-            MKL.Lic    ("TeddyBear - Program.cs","GNU General Public License 3");
+            MKL.Version("TeddyBear - TeddyXPort.cs","19.04.05");
+            MKL.Lic    ("TeddyBear - TeddyXPort.cs","GNU General Public License 3");
             cwrite(ConsoleColor.Yellow, "TeddyBear Exporter ");
             cwriteln(ConsoleColor.Cyan, "\tCoded by: Jeroen P. Broks");
             cwriteln(ConsoleColor.Magenta, $"(c) {MKL.CYear(2019)} Jeroen P. Broks, Released under the terms of the GPL 3\n");

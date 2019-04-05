@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.04.04
+// Version: 19.04.05
 // EndLic
+
 
 
 
@@ -121,7 +122,7 @@ namespace TeddyEdit
 #if DEBUG
                     ProjectData.MapFile = $"{Dirry.AD(ProjectData.ProjectConfig.C("LevelDir"))}/Test Map";
 #else
-                    ProjectData.MapFile =  $"{Dirry.AD(ProjectData.ProjectConfig.C("LevelDir"))}{ProjectData.args[2]}";
+                    ProjectData.MapFile =  $"{Dirry.AD(ProjectData.ProjectConfig.C("LevelDir"))}/{ProjectData.args[2]}";
 #endif
                 }
             }
