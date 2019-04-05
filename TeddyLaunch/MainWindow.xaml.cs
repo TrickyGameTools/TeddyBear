@@ -116,6 +116,7 @@ namespace TeddyBear
             }
             switch (config.C("Platform")) {
                 case "Windows":
+                    System.Diagnostics.Debug.WriteLine("Init Alt Drive: Windows");
                     Dirry.InitAltDrives(AltDrivePlaforms.Windows);
                     break;
                 case "Linux":
@@ -207,11 +208,21 @@ namespace TeddyBear
             AutoEnable();
         }
 
-        void ScanMaps() {
+        void ScanMaps() {            
             string SelPrj = (string)PrjSelect.SelectedValue;
             PrjMapSelect.Items.Clear();
             if (SelPrj == "" || SelPrj[0] == '*') return;
             PrjMapSelect.Items.Add("**NEW MAP**");
+            //System.Diagnostics.Debug.WriteLine($"Alt Drives {Dirry.ADrives()}"); // Debug
+
+            var pfile = Dirry.AD($"{DirWorkSpace}/{SelPrj}/{SelPrj}.Project.GINI");
+            TGINI TProject = GINI.ReadFromFile(pfile);
+            if (TProject == null)
+                MessageBox.Show($"Failed to load the project file!\n{pfile}");
+            else {
+                var ls = FileList.GetDir(Dirry.AD(TProject.C("LEVELDIR")));
+                foreach (string f in ls) PrjMapSelect.Items.Add(f);
+            }
         }
 
 
