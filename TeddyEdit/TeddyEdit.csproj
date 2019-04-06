@@ -182,6 +182,21 @@
     <Compile Include="..\TeddyClass\TeddySave.cs">
       <Link>Imported\TeddyBear\TeddySave.cs</Link>
     </Compile>
+    <Compile Include="..\xport\class\base.cs">
+      <Link>xport\base.cs</Link>
+    </Compile>
+    <Compile Include="..\xport\class\javascript.cs">
+      <Link>xport\javascript.cs</Link>
+    </Compile>
+    <Compile Include="..\xport\class\json.cs">
+      <Link>xport\json.cs</Link>
+    </Compile>
+    <Compile Include="..\xport\class\lua.cs">
+      <Link>xport\lua.cs</Link>
+    </Compile>
+    <Compile Include="..\xport\class\python.cs">
+      <Link>xport\python.cs</Link>
+    </Compile>
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectData.cs" />

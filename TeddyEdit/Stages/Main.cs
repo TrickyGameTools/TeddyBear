@@ -21,25 +21,13 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.04.05
+// Version: 19.04.06
 // EndLic
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using TeddyEdit;
@@ -47,6 +35,7 @@ using TeddyBear;
 using TrickyUnits;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using TeddyXport;
 
 namespace TeddyEdit.Stages {
     class Main : BasisStage {
@@ -55,11 +44,31 @@ namespace TeddyEdit.Stages {
         static public bool DoQuit { get; private set; } = false;
 
         public void SaveMap() {
+            #region Save the map in TeddyBear's native format
             UI.ErrorNotice = "";
             ProjectData.Log($"Compresion = {ProjectData.MapCompression}");
             var r = TeddySave.Save(ProjectData.Map, ProjectData.MapFile, "", ProjectData.MapCompression,ProjectData.MapCompression);
-            if (r != "" && r != "Ok") UI.ErrorNotice = r;
+            if (r != "" && r != "Ok") { UI.ErrorNotice = r; return; }
+            #endregion
 
+            #region Export the map if applicable
+            if (ProjectData.ProjectConfig.C("XPORT.EDITAUTO").ToUpper() != "YES") return;
+            var XTo = ProjectData.ProjectConfig.C("XPORT.TO");
+            var XTarget = ProjectData.ProjectConfig.C("XPORT.TARGET").ToLower();
+            if (XTo=="") { UI.ErrorNotice = "EXPORT: Folder to export to not configured!"; return; } XTo = Dirry.AD(XTo);
+            if (XTarget=="") { UI.ErrorNotice = "EXPORT: Target language to export to not set!"; return; }
+            if (!XPort_Base.Drivers.ContainsKey(XTarget)) { UI.ErrorNotice = $"EXPORT: Target language '{XTarget}' unknown!"; return; }
+            try {
+                ProjectData.Log($"Translating into {XTarget} to folder {XTo}");
+                var translation = XPort_Base.Drivers[XTarget].Translate(ProjectData.Map);
+                Directory.CreateDirectory(XTo);
+                var outfile = XPort_Base.Drivers[XTarget].TransFile($"{XTo}/{qstr.StripDir(ProjectData.MapFile)}");
+                ProjectData.Log($"Saving translation into {outfile}");
+                QuickStream.SaveString(outfile, translation);
+            } catch (Exception e) {
+                UI.ErrorNotice = $"EXPORT.SAVE: {e.Message}";
+            }
+            #endregion
         }
 
         public override void Update(Game1 game, GameTime gameTime, MouseState mouse, GamePadState gamepad, KeyboardState kb) {

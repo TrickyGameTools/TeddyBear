@@ -25,16 +25,6 @@
 // EndLic
 
 
-
-
-
-
-
-
-
-
-
-
 #define debuglog
 
 
@@ -49,6 +39,7 @@ using TrickyUnits;
 using UseJCR6;
 using TeddyBear;
 using TeddyEdit.Stages;
+
 
 namespace TeddyEdit    
 {
