@@ -1,7 +1,7 @@
 // Lic:
 // TeddyClass/TeddyDraw_MonoGame.cs
 // TeddyBear C#
-// version: 19.04.02
+// version: 19.04.06
 // Copyright (C)  Jeroen P. Broks
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -17,6 +17,7 @@
 // misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 // EndLic
+
 
 
 #undef donttry
@@ -43,7 +44,7 @@ namespace TeddyBear
         public static void Init()
         {
             Error = "";
-            MKL.Version("TeddyBear - TeddyDraw_MonoGame.cs","19.04.02");
+            MKL.Version("TeddyBear - TeddyDraw_MonoGame.cs","19.04.06");
             MKL.Lic    ("TeddyBear - TeddyDraw_MonoGame.cs","ZLib License");
             // This item will allow MonoGame to draw tiles in the map
             TeddyDraw.DrawTileItem = delegate (TeddyMap map, string layer, int screenstart_x, int screenstart_y, int scroll_x, int scroll_y, int posx, int posy)
@@ -78,7 +79,62 @@ namespace TeddyBear
                 }
 
                 if (Texture[b] != null) {
-                    Texture[b].Draw((screenstart_x + (posx * map.GridX)) - scroll_x, (screenstart_y + (posy * map.GridY)) - scroll_y);
+                    var modix = 0;
+                    var modiy = 0;
+                    var dtex = Texture[b];
+                    var dlay = map.Layers[layer];
+                    // X
+                    switch (dlay.Hot[1]) {
+
+                        case 'L':
+
+                            break;
+
+                        case 'C':
+
+                            modix = (map.GridX/2) - (dtex.Width / 2);
+
+                            break;
+
+                        case 'R':
+
+                            modix = map.GridX - dtex.Width;
+
+                            break;
+
+                        default:
+
+                            return; // ERROR!
+
+                    }
+                    // Y
+                    switch (dlay.Hot[0]) {
+
+                        case 'T':
+
+                            break;
+
+                        case 'C':
+
+                            modiy = (map.GridY / 2) - (dtex.Height / 2);
+
+                            break;
+
+                        case 'B':
+
+                            modiy = map.GridY - dtex.Height;
+
+                            break;
+
+                        default:
+
+                            return; // ERROR!
+
+                    }
+                    var dx = ((screenstart_x + (posx * map.GridX)) - scroll_x) + modix;
+                    var dy = ((screenstart_y + (posy * map.GridY)) - scroll_y) + modiy;
+                    dtex.Draw(dx, dy);
+                    //TeddyEdit.UI.font32.DrawText(dlay.Hot, dx, dy); // debug!!!
 
                 }
 

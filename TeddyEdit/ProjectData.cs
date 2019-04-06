@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.04.03
+// Version: 19.04.06
 // EndLic
+
 
 
 
@@ -207,8 +208,11 @@ namespace TeddyEdit
                         Crash.Error(Game, $"Map failed to load!\nJCR reported: {JCR6.JERROR}");
                         return;
                     }
-                    foreach (string lay in MapLayers)
+                    foreach (string lay in MapLayers) {
                         if (!Map.Layers.ContainsKey(lay)) Map.NewLayer(lay);
+                        Map.Layers[lay].Hot = "BC";
+                        if (ProjectConfig.C($"Hot.{MapLayers}") != "") Map.Layers[lay].Hot = ProjectConfig.C($"Hot.{MapLayers}");
+                    }
                 }
                 if (Map==null) { Crash.Error(Game,$"Error loading map \"{_map}\""); AllWell = false; return; }
                 // The settings file is kept apart from the map file for the main reason that TeddyBear has primarily been designed
