@@ -25,7 +25,10 @@
 // EndLic
 
 
+
+#if DEBUG
 #define debuglog
+#endif
 
 
 using System;
