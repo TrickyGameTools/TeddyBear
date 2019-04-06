@@ -44,7 +44,7 @@ T:\Tricky>git clone TrickyGameTools/TeddyBear
 That should get you everything you need, then we can do the following to compile
 ~~~batch
 T:\Tricky>cd TeddyBear
-T:\Tricky\TeddyBear>TeddyMake
+T:\Tricky\TeddyBear>TeddyBuild
 ~~~
 
 Please note that the building script "TeddyMake" assumes the "msbuild.exe" tool to be found at "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild.exe". If you have another location, set "TRICKYMSBUILD" to your location prior to running the TeddyBuild script.
